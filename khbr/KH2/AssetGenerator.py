@@ -14,13 +14,13 @@ import random
 
 # TODO future refactor could use jsonpath to make looking through the complex spawns dict easier
 class AssetGenerator:
-    def __init__(self, modwriter, spawn_manager = None, location_manager=None, enemy_manager = None, moose=False, is_boss_rush=False, force_story_boss_levels=False):
+    def __init__(self, modwriter, spawn_manager = None, location_manager=None, enemy_manager = None, ispc=False, is_boss_rush=False, force_story_boss_levels=False):
         self.assets = []
         self.modwriter = modwriter
         self.enemy_manager = enemy_manager
         self.location_manager = location_manager
         self.spawn_manager = spawn_manager
-        self.moose = moose
+        self.ispc = ispc
         self.is_boss_rush=is_boss_rush
         self.force_story_boss_levels=force_story_boss_levels
 
@@ -94,7 +94,7 @@ class AssetGenerator:
 
             new_enmp_index = self.enemy_manager.enemy_records[new_enemy]["enmp_index"] # really its the id not the index anymore
             if not new_enmp_index:
-                log_output(f"WARNING: Can't scale {new_enemy}, no ENMP index found", log_level=1)
+                log_output("WARNING: Can't scale {}, no ENMP index found".format(new_enemy), log_level=1)
                 continue
             def _get_index(source, idnum):
                 for i in range(len(source)):
@@ -109,7 +109,7 @@ class AssetGenerator:
                 original_enmp_index = self.enemy_manager.enemy_records[original_enemy]["enmp_index"]
             
                 if not original_enmp_index:
-                    log_output(f"WARNING: Can't scale {original_enemy}, no ENMP index found", log_level=0)
+                    log_output("WARNING: Can't scale {}, no ENMP index found".format(original_enemy), log_level=0)
                     continue
                 original_enmp_data = enmp_data_vanilla[_get_index(enmp_data_vanilla, original_enmp_index)]
                 new_enmp_data["health"] = original_enmp_data["health"]
@@ -324,7 +324,7 @@ class AssetGenerator:
             elif rando_type == "Random Values":
                 karma_values = [random.randint(0,200) for _ in karma_values]
             else:
-                raise Exception(f"Invalid Karma Limit Value: {rando_type}")
+                raise Exception("Invalid Karma Limit Value: {}".format(rando_type))
 
             objdir = os.path.join(os.path.dirname(__file__), "data", "bdscript", "obj")
             for modelname in os.listdir(objdir):
@@ -333,7 +333,7 @@ class AssetGenerator:
                     continue
                 aifiles = [f for f in os.listdir(os.path.join(objdir, modelname)) if "original" not in f]
                 if len(aifiles) != 1:
-                    raise Exception(f"Wrong number of files for {modelname}: {len(aifiles)}")
+                    raise Exception("Wrong number of files for {}: {}".format(modelname, len(aifiles)))
                 if modelname in created_mods:
                     created_mods[modelname]["manager"].set_karma_limit(karma_values)
                 else:
@@ -374,7 +374,7 @@ class AssetGenerator:
 
             # This might cause some issues with bosses like the FF bosses because the camera complete won't work, and of course it prevents mickey in some fights, which is most likely fine
             if self.find_asset(oldmsn+".bar"):
-                log_output(f"Old MSN {oldmsn} has an ai edit, so can't copy over {new_msn_name}", log_level=1)
+                log_output("Old MSN {} has an ai edit, so can't copy over {}".format(oldmsn, new_msn_name), log_level=1)
                 continue
             info = msninfo[new_msn_name]
             mission = Mission(new_msn_name, info)
@@ -396,27 +396,88 @@ class AssetGenerator:
             self.assets.append(asset)
 
     def getDefaultRoomAsset(self, ardname):
+        region = '' if not self.ispc else 'us/'
         # Ideally this would be 
-        formattedname =  f"ard/{ardname}.ard"
+        formattedname =  "ard/{}{}.ard".format(region, ardname)
         roomasset = {
             "method": "binarc",
             "name": formattedname,
             "source": []
         }
-        # if region:
-        multi = [{"name": formattedname.replace("ard/", r)} for r in ["ard/us/", "ard/jp/","ard/fr/","ard/gr/","ard/it/","ard/sp/","ard/uk/"]]
-        roomasset["multi"] = multi
+        if region:
+            multi = [{"name": formattedname.replace(region, r)} for r in ["jp/","fr/","gr/","it/","sp/","uk/"]]
+            roomasset["multi"] = multi
         return roomasset
 
-    def generateSpawns(self, replacement_spawns, subtract_map):
+    def generateSpawns(self, replacement_spawns, subtract_map, spoilers=None):
+        """
+        Apply replacement spawns. If spoilers dict is passed, boss spoilers are
+        built from the actual spawn file (slot -> old ObjectId -> name), so the
+        spoiler log is guaranteed to match what is written.
+        """
         original_spawns = self.location_manager.locations
 
         if not replacement_spawns:
             return
 
+        # Boss spoilers: create_seed already set them (including self-replacements). We overwrite
+        # with spawn-file-accurate names only for bosses we actually write here.
+        # Game names that are overridden by location (e.g. Hydra, Shadow Stalker) must not appear in the log.
+        overridden_game_names = set()
+        written_spoiler_keys = set()  # Keys we wrote; never remove these (e.g. Larxene is both a game name and a display name)
         text_spoilers = {
             "final_fights": []
         }
+
+        def _key_eq(a, b):
+            """Key equality for YAML str/int (e.g. '64' vs 64, '3' vs 3)."""
+            if a == b:
+                return True
+            if a is None or b is None:
+                return False
+            return str(a) == str(b)
+
+        def _override_name_for_slot(basespawns, spid, entity_index):
+            """Get override display name for this (sp_id, entity index) in this room.
+            Scans all spawnpoints and sp_ids so we always get the right name (e.g. Vexen vs Vexen (Data))
+            regardless of spawnpoint name or index type (str/int from YAML)."""
+            if not basespawns:
+                return None
+            spawnpoints = basespawns.get("spawnpoints", {}) or {}
+            for sp_data in spawnpoints.values():
+                sp_ids = (sp_data or {}).get("sp_ids", {}) or {}
+                # Get entity list for this sp_id (try exact, then str/int variant)
+                entities = sp_ids.get(spid)
+                if not entities and sp_ids:
+                    alt = int(spid) if isinstance(spid, str) and str(spid).isdigit() else str(spid)
+                    entities = sp_ids.get(alt)
+                if not entities and sp_ids:
+                    for key in sp_ids:
+                        if _key_eq(key, spid):
+                            entities = sp_ids[key]
+                            break
+                if not entities:
+                    continue
+                for e in entities:
+                    if _key_eq(e.get("index"), entity_index):
+                        name = (e.get("name") or "").strip()
+                        if name:
+                            return name
+                # Single-entity list: match by position when index matches or is missing
+                if entity_index < len(entities):
+                    e = entities[entity_index]
+                    if _key_eq(e.get("index"), entity_index) or e.get("index") is None:
+                        name = (e.get("name") or "").strip()
+                        if name:
+                            return name
+                # Fallback: use first boss/name in this sp_id list (e.g. only one boss per sp_id)
+                for e in entities:
+                    if e.get("isboss") and (e.get("name") or "").strip():
+                        return (e.get("name") or "").strip()
+                for e in entities:
+                    if (e.get("name") or "").strip():
+                        return (e.get("name") or "").strip()
+            return None
 
         def getworld(b):
             if b.get("msn"):
@@ -432,11 +493,20 @@ class AssetGenerator:
 
         for w, world in replacement_spawns.items():
             for r, room in world.items():
-                ardname = self.location_manager.get_ardname(r)
-                
+                try:
+                    ardname = self.location_manager.get_ardname(r)
+                except (KeyError, TypeError):
+                    continue
                 roomasset = self.getDefaultRoomAsset(ardname)
-
-                basespawns = original_spawns[w][r]
+                # Look up room data (override) so spoiler keys match location names (e.g. Vexen vs Vexen (Data))
+                basespawns = original_spawns.get(w, {}).get(r)
+                if basespawns is None and r:
+                    for _w, _world in original_spawns.items():
+                        if r in _world:
+                            basespawns = _world[r]
+                            break
+                if basespawns is None:
+                    basespawns = {}
                 btlmods = {"adds": basespawns.get("battlescriptadds", {}) }
                 if self.is_boss_rush:
                     for k,v in basespawns.get("battlescriptadds_br", {}).items():
@@ -449,10 +519,10 @@ class AssetGenerator:
                     existing_spawnpoint = self.spawn_manager.getSpawnpoint(ardname, spn, roommods)
                     #default_object = dict(existing_spawnpoint[0]["Entities"][0])
 
-                    def _update_unitid(i, unitid, custom_unit_list):
+                    def _update_spid(i, spid, custom_unit_list):
                         gr2_self_replace = False
-                        for new_entity in unitid:
-                            old_unitid = self.spawn_manager.getunitid(existing_spawnpoint, int(i))
+                        for new_entity in spid:
+                            old_spid = self.spawn_manager.getSpId(existing_spawnpoint, int(i))
                             # Get to the right spawnpointid sp_instance
                             old_spawn_index = new_entity["index"]
 
@@ -464,28 +534,55 @@ class AssetGenerator:
                                 del new_entity["customUnit"]
                                 self.spawn_manager.add_new_object(custom_unit_list[cu_id], new_entity)#, default_object=default_object)
                             elif new_entity["index"] == "new":
-                                self.spawn_manager.add_new_object(old_unitid, new_entity)
+                                self.spawn_manager.add_new_object(old_spid, new_entity)
                             elif type(new_entity["name"]) == int:
-                                self.spawn_manager.set_object_by_id(old_unitid["Entities"][old_spawn_index], new_entity)
+                                self.spawn_manager.set_object_by_id(old_spid["Entities"][old_spawn_index], new_entity)
                             else:
 
                                 obj = self.enemy_manager.lookup_object(new_entity["name"])
 
-                                if old_spawn_index >= len(old_unitid["Entities"]):
+                                if old_spawn_index >= len(old_spid["Entities"]):
                                     continue # Case like AX1 room where AX1 was replaced subtracting the spawns that got replaced by the icy cube... Smelly way to fix this
-                                old_spawn = old_unitid["Entities"][old_spawn_index]
-                                old_obj = self.enemy_manager.lookup_object_by_id(old_spawn["ObjectId"])
+                                old_spawn = old_spid["Entities"][old_spawn_index]
+                                # Use id+vars lookup to correctly identify boss variants (e.g. Larxene vs Larxene (Data))
+                                old_obj = self.enemy_manager.lookup_object_by_id_and_vars(
+                                    old_spawn["ObjectId"],
+                                    old_spawn.get("Argument1", 0),
+                                    old_spawn.get("Argument2", 0)
+                                )
+                                if not old_obj:
+                                    log_output("Warning: Could not find enemy record for ObjectId={} arg1={} arg2={} at w={} r={} sp={} spid={} idx={}".format(
+                                        old_spawn["ObjectId"], old_spawn.get("Argument1", 0), old_spawn.get("Argument2", 0),
+                                        w, r, spn, i, old_spawn_index), log_level=0)
+                                    continue
                                 if old_obj.get("story_level", 0) > 0 and self.force_story_boss_levels:
                                     prg = old_obj["program"]
                                     if old_obj["program"] in btlmods["adds"]:
-                                        btlmods["adds"][prg].append(f"BattleLevel {old_obj['story_level']}")
+                                        btlmods["adds"][prg].append("BattleLevel {}".format(old_obj["story_level"]))
                                     else:
-                                        btlmods["adds"][prg] = [f"BattleLevel {old_obj['story_level']}"]
+                                        btlmods["adds"][prg] = ["BattleLevel {}".format(old_obj["story_level"])]
                                 if "fix_source_area_settings" in old_obj["tags"] and self.is_boss_rush:
                                     evtmods["fix_settings"].append({"world": getworld(old_obj), "room": getroom(old_obj), "program": old_obj["program"], "options": {"fix_source_area_settings": True} })
 
                                 if old_spawn["ObjectId"] == 1543 and new_entity["name"] == "Grim Reaper II" and old_spawn["Argument1"] == 0: # Grim Reaper II is replacing itself
                                     gr2_self_replace = True
+
+                                # Spoiler: for each boss we write, set spoiler key -> boss actually placed there.
+                                # Key from override by (sp_id, index) so each arena gets its own line (e.g. Vexen vs Vexen (Data)).
+                                if spoilers is not None and old_obj.get("type") == "boss":
+                                    actual_old_name = old_obj["name"]
+                                    spoiler_key = _override_name_for_slot(basespawns, i, old_spawn_index)
+                                    if not spoiler_key:
+                                        spoiler_key = actual_old_name
+                                    is_override_slot = spoiler_key != actual_old_name
+                                    if is_override_slot:
+                                        overridden_game_names.add(actual_old_name)
+                                    # Always set this slot to the boss we wrote so spoiler matches the files.
+                                    spoilers["boss"][spoiler_key] = new_entity["name"]
+                                    written_spoiler_keys.add(spoiler_key)
+                                    log_output("Spoiler set from spawn: {} -> {} (w={} r={} sp={} spid={} idx={} obj_id={} arg1={} arg2={})".format(
+                                        spoiler_key, new_entity["name"], w, r, spn, i, old_spawn_index,
+                                        old_spawn["ObjectId"], old_spawn.get("Argument1", 0), old_spawn.get("Argument2", 0)), log_level=1)
 
                                 final_txt = final_fight_text(old_spawn, new_entity["name"])
                                 if final_txt:
@@ -505,12 +602,11 @@ class AssetGenerator:
                                 entity["Medal"] = 0
 
                     custom_unit_list = {} # keyed on ID
-                    unit_name = "units" if "units" in spawnpoint else "sp_ids" # Try to be backwards compatible for overrides
-                    for i, unitid in spawnpoint["units"].items():
-                        _update_unitid(i, unitid, custom_unit_list)
+                    for i, spid in spawnpoint["sp_ids"].items():
+                        _update_spid(i, spid, custom_unit_list)
                     for cid, unit in custom_unit_list.items():
                         if cid in [s["Id"] for s in existing_spawnpoint]:
-                            log_output(f"Warning: unitid already exists in spawnpoint, test for problems. {cid} {ardname}", log_level=1) # DEBUG ONLY
+                            log_output("Warning: spid already exists in spawnpoint, test for problems. {} {}".format(cid, ardname), log_level=1) # DEBUG ONLY
                         existing_spawnpoint.append(unit)
                     
                     spasset = self.modwriter.writeSpawnpoint(ardname, spn, existing_spawnpoint)
@@ -525,8 +621,8 @@ class AssetGenerator:
                 # For now it's only needed for OC Cups
                 if ardname == "he09":
                     basename = "he09.btl.ps2.areadatascript"
-                    if self.moose:
-                        basename = basename.replace("ps2","moose")
+                    if self.ispc:
+                        basename = basename.replace("ps2","pc")
                     assetpath = os.path.join(os.path.dirname(__file__), "data", basename)
                     programasset = self.modwriter.writeCopiedSubfile(ardname, "btl", "AreaDataScript", assetpath)
                     roomasset["source"].append(programasset)
@@ -537,19 +633,25 @@ class AssetGenerator:
                     self.generateEvt(evt_mod["world"], evt_mod["room"], evt_mod["program"], roomasset["source"], options=evt_mod["options"])
             
                 self.assets.append(roomasset)
+        # Remove vanilla boss names that were overridden (e.g. Hydra, Shadow Stalker, Jafar) so they never appear in the spoiler log.
+        # Do not remove a key that we also wrote (e.g. Larxene is a display name for its own slot, so keep it).
+        if spoilers is not None and overridden_game_names:
+            for k in overridden_game_names:
+                if k not in written_spoiler_keys:
+                    spoilers["boss"].pop(k, None)
         if text_spoilers["final_fights"]:
             textasset = self.modwriter.writeMSG("eh", text_spoilers["final_fights"])
             self.assets.append(textasset)
 
     def update_area_data_programs(self, ardname, roomsource, btlmods={}):
-        def _can_update_capacity(moose, prg):
+        def _can_update_capacity(ispc, prg):
             if not prg.has_command("Capacity"):
                 return False
             if ardname in ["mu07", "mu09"]:
                 # Summit will crash when capacity is infinite, and shan yu's summons can sometimes crash the game
                 return False
             mission = prg.get_mission()
-            if (not moose) and (not mission):
+            if (not ispc) and (not mission):
                 # It's not a big deal if enemies fail to spawn properly in areas where you don't have a mission going on
                 return False             
             if mission == "MU02_MS103B":
@@ -559,12 +661,12 @@ class AssetGenerator:
         #btlmods = {} 
         btlfn = os.path.join(KH2_DIR, "subfiles", "script", "ard", ardname, "btl.script")
         with open(btlfn) as f:
-            script = AreaDataScript(f.read(), moose=self.moose)
+            script = AreaDataScript(f.read(), ispc=self.ispc)
         for p in script.programs:
             prg = script.programs[p]
-            if _can_update_capacity(script.moose, prg):
+            if _can_update_capacity(script.ispc, prg):
                 prg.update_capacity(HARDCAP)
-            if self.moose:
+            if self.ispc:
                 if prg.has_command("Spawn"):
                     prg.add_packet_spec()
                     prg.add_enemy_spec()
@@ -586,7 +688,7 @@ class AssetGenerator:
                 "FadeType": sp[11]
             }
 
-        log_output(f"DEBUG: making {world} {room} evt program {programnumber}, {options}")
+        log_output("DEBUG: making {} {} evt program {}, {}".format(world,room,programnumber,options))
         if not options:
             log_output("Warning: generate_evt not generating anything", log_level=0)
         ardname = world.lower()+room.lower()

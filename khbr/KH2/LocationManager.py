@@ -24,17 +24,17 @@ class LocationManager:
 
     def set_btlmap(self):
         with open(os.path.join(self.basepath, "btl-ard-data.yml")) as f:
-            self.btlmap = yaml.load(f, Loader=yaml.FullLoader)
+            self.btlmap = yaml.load(f)
 
     def get_sp_max_enemy_types(self, room, unit):
-        max_types = self.btlmap[f"{self.locmap[room]}-{unit}"].get("max_variety", "NOT_FOUND")
+        max_types = self.btlmap["{}-{}".format(self.locmap[room], unit)].get("max_variety", "NOT_FOUND")
         if max_types == "NOT_FOUND":
-            print(f"WARNING: NOT FOUND max_variety FOR {room}")
+            print("WARNING: NOT FOUND max_variety FOR {}".format(room))
             max_types = 3
         return max_types
 
     def get_sp_for_mission(self, room, unit):
-        return self.btlmap[f"{self.locmap[room]}-{unit}"]["mission"]
+        return self.btlmap["{}-{}".format(self.locmap[room], unit)]["mission"]
 
     def set_locations(self):
         with open(os.path.join(os.path.dirname(__file__), "data", "locations.yaml")) as f:
@@ -62,6 +62,6 @@ class LocationManager:
     @staticmethod
     def update_location(location, config: RandomConfig):
         memory_expansion = config.memory_expansion
-        if "moose" in location and memory_expansion:
-            for k in location["moose"]:
-                location[k] = location["moose"][k]
+        if "pc" in location and memory_expansion:
+            for k in location["pc"]:
+                location[k] = location["pc"][k]

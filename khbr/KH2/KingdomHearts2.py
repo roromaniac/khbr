@@ -37,9 +37,9 @@ class KingdomHearts2:
                                  "type": "enemy", "possible_values": [False, True], "hidden_values": []},
             "other_enemies": {"display_name": "Randomize misc enemies as Heartless", "description": "Enables and randomizes the following enemies as if they were heartless: Pirates, Bulky Vendors, Bees",
                                 "type": "enemy", "possible_values": [False, True], "hidden_values": []},  
-            "combine_enemy_sizes": {"display_name": "Combine Enemy Sizes (MOOSE Only)", "description": "Normally small enemies are randomized separately from big enemies to prevent crashing. Must use MOOSE to prevent crashes.",
+            "combine_enemy_sizes": {"display_name": "Combine Enemy Sizes (Unstable/PC Only)", "description": "Normally small enemies are randomized separately from big enemies to prevent crashing. On PC it is less likely to crash, so this option is to combine them (EXPERIMENTAL MAY CAUSE BAD CRASHES)",
                                  "type": "enemy", "possible_values": [False, True], "hidden_values": [], "experimental": True},
-            "combine_melee_ranged": {"display_name": "Combine Melee and Ranged enemies (MOOSE Only)", "description": "Normally ranged and melee enemies are randomized separate from each other, both for difficulty and to reduce crashing. Must use MOOSE to prevent crashes",
+            "combine_melee_ranged": {"display_name": "Combine Melee and Ranged enemies (Unstable/PC Only)", "description": "Normally ranged and melee enemies are randomized separate from each other, both for difficulty and to reduce crashing. On PC it is less likely to crash, so this option will combine them (EXPERIMENTAL MAY CAUSE BAD CRASHES)",
                                  "type": "enemy", "possible_values": [False, True], "hidden_values": [], "experimental": True},
 
             "boss": {"display_name": "Boss Randomization Mode", "description": "Select if and how the bosses should be randomized. Available choices: One-to-One replacement just shuffles around where the bosses are located, but each boss is still present (some bosses may be excluded from the randomization). Wild will randomly pick an available boss for every location, meaning some bosses can be seen more than once, and some may never be seen. If a selected boss is filled in this setting is ignored and (almost) every boss will become that boss.",
@@ -48,13 +48,13 @@ class KingdomHearts2:
                                 "type": "boss", "possible_values": [None] + sorted(self.get_valid_bosses()), "hidden_values": []},
             "nightmare_bosses": {"display_name": "Nightmare Bosses", "description": "Replaces bosses using only the most difficult bosses in the game. Forces Boss Randomization Mode to be 'Wild'",
                                 "type": "boss", "possible_values": [False, True], "hidden_values": []},
-            "bosses_replace_enemies": {"display_name": "Bosses Can Replace Enemies (MOOSE only)", "description": "Replaces 0.5 percent of enemies in the game with a random boss. Should not put more than one boss as enemy in a single room, due to memory concerns. This option is intended for MOOSE use only.",
+            "bosses_replace_enemies": {"display_name": "Bosses Can Replace Enemies (Unstable/PC only)", "description": "Replaces 0.5 percent of enemies in the game with a random boss. Should not put more than one boss as enemy in a single room, due to memory concerns. This option is intended for PC use only.",
                     "type": "boss", "possible_values": [False, True], "hidden_values": [], "experimental": True},
             "cups_bosses": {"display_name": "Randomize Cups Bosses", "description": "Include the coliseum bosses in the randomization pool",
                                 "type": "boss", "possible_values": [True, False], "hidden_values": []},
             "data_bosses": {"display_name": "Randomize Data Bosses", "description": "Include the Data versions of organization members in the pool",
                                 "type": "boss", "possible_values": [False, True], "hidden_values": []},      
-            "gimmick_bosses": {"display_name": "Allow more risky replacements (MOOSE Only)", "description": "Allow a set of banned replacements that may be end up being exceedingly difficult/tedious, or that can softlock/crash in certain cases.\nExample: Allows Sephiroth to replace Blizzard or Volcano Lord.\nWhen using this option it is useful to be aware of the major known issues (https://github.com/thundrio-kh/khbr/blob/master/KNOWN_ISSUES).",
+            "gimmick_bosses": {"display_name": "Allow more risky replacements (PC Only)", "description": "Allow a set of banned replacements that may be end up being exceedingly difficult/tedious, or that can softlock/crash in certain cases.\nExample: Allows Sephiroth to replace Blizzard or Volcano Lord.\nWhen using this option it is useful to be aware of the major known issues (https://github.com/thundrio-kh/khbr/blob/master/KNOWN_ISSUES).",
                                 "type": "boss", "possible_values": [False, True], "hidden_values": []},
             "sephiroth": {"display_name": "Randomize Sephiroth", "description": "Include Sephiroth in the boss randomization pool",
                                 "type": "boss", "possible_values": [False, True], "hidden_values": []},
@@ -70,7 +70,7 @@ class KingdomHearts2:
     def get_hidden_options(self):
         # Options that are options but should not show up in the autogenerated UI in the generator
         return {
-            "memory_expansion": {"display_name": "Use MOOSE For Expanded Memory", "description": "An DLL created by crazycat called MOOSE can be used to greatly enhance the enemy randomization capabilities. If you are on PC and want this to be installed, turn this setting on.",
+            "memory_expansion": {"display_name": "Use Expanded Memory", "description": "The PS2 version of the game has more limited enemy randomization capabilities. Turn this option on if playing on PC to remove these constraints.",
                                 "possible_values": [False, True], "hidden_values": []},
            
             # used by boss rush
@@ -137,25 +137,25 @@ class KingdomHearts2:
             utility_mods.append("is_boss_rush")
         rmcs = options.get("remove_cutscenes", "Disabled")
         if rmcs and rmcs != "Disabled":
-            utility_mods.append(f"remove_cutscenes{options.get('remove_cutscenes')}")
+            utility_mods.append("remove_cutscenes{}".format(options.get("remove_cutscenes")))
         rvlr = options.get("revenge_limit_rando", "Vanilla")
         if rvlr and rvlr != "Vanilla":
-            utility_mods.append(f"revenge_limit_rando{options.get('revenge_limit_rando')}")
+            utility_mods.append("revenge_limit_rando{}".format(options.get("revenge_limit_rando")))
         return utility_mods
 
     def perform_randomization(self, options, seed=None):
-        log_output(f"KHBR Version: {'4.1.2'}")
-        log_output(f"Enemy Seed: {seed}", log_level=0)
+        log_output("KHBR Version: {}".format('4.1.2'))
+        log_output("Enemy Seed: {}".format(seed), log_level=0)
         if DIAGNOSTICS:
             start_time = time.time()
-            log_output(f"Starting Randomization: {options}", log_level=0)
+            log_output("Starting Randomization: {}".format(options), log_level=0)
 
         enemymode = options.get("enemy", 'Disabled') if not options.get("selected_enemy") else options.get("selected_enemy")
         bossmode = options.get("boss", "Disabled") if not options.get("selected_boss") else options.get("selected_boss")
         nightmare_bosses = options.get("nightmare_bosses")
         memory_expansion = options.get("memory_expansion")
         if enemymode == "Wild" and not memory_expansion:
-            raise Exception("Wild enemy mode only works with MOOSE due to vanilla memory constraints.")
+            raise Exception("Wild enemy mode only works on PC due to memory constraints on the PS2 version.")
         
         override_location_map = read_override("location-ard-map.json")
         self.location_manager.update_locmap(override_location_map)
@@ -235,14 +235,14 @@ class KingdomHearts2:
 
         if DIAGNOSTICS:
             end_time = time.time()
-            log_output(f"Enemy Randomization Complete: {end_time-start_time}s", log_level=0)
+            log_output("Enemy Randomization Complete: {}s".format(end_time-start_time), log_level=0)
 
         return rand_seed_json
 
     def create_seed(self, rand_seed: EnemySeed):
             rand_seed.bossmapping = pickbossmapping(self.enemy_manager.enemy_records, rand_seed.config.bosses) if not rand_seed.config.duplicate_bosses else None
             if rand_seed.config.enemies and rand_seed.config.enemymode != "Selected Enemy":
-                categorized_enemies = self.enemy_manager.categorize_enemies(rand_seed.config.enemies, combine_sizes=rand_seed.config.combine_enemy_sizes, combine_ranged=rand_seed.config.combine_melee_ranged, separate_nobodys=rand_seed.config.separate_nobodys, other_enemies=rand_seed.config.other_enemies, moose=rand_seed.config.memory_expansion)
+                categorized_enemies = self.enemy_manager.categorize_enemies(rand_seed.config.enemies, combine_sizes=rand_seed.config.combine_enemy_sizes, combine_ranged=rand_seed.config.combine_melee_ranged, separate_nobodys=rand_seed.config.separate_nobodys, other_enemies=rand_seed.config.other_enemies, ispc=rand_seed.config.memory_expansion)
                 rand_seed.enemymapping = pickenemymapping(self.enemy_manager.enemy_records, categorized_enemies, spoilers=self.spoilers["enemy"], nightmare=rand_seed.config.nightmare_enemies)
 
                 # Debug print out the enemy mapping
@@ -272,8 +272,7 @@ class KingdomHearts2:
                             continue
                         created_enemies = [] # This is a little weird it's just for location aimods, ideally they would be done at a different level than the spawnpoint level
                         bosses_as_enemies = 0
-                        unit_name = "units" if "units" in spawnpoint else "sp_ids" # try to be backwards compatible
-                        for i, entities in spawnpoint["units"].items(): # Fun fact: The internal game code refers to these as "unit"s
+                        for i, entities in spawnpoint["sp_ids"].items(): # Fun fact: The internal game code refers to these as "unit"s
 
                             # TODO might be able to make this just for entity in entities
                             for e in range(len(entities)):
@@ -295,10 +294,11 @@ class KingdomHearts2:
                                     new_boss = self.spawn_manager.get_new_boss(old_boss_object, old_boss_parent, rand_seed.config, rand_seed, self.enemy_manager.enemy_records)        
                                     if not new_boss:
                                         continue
-                                    self.spoilers["boss"][entity["name"]] = new_boss
 
                                     # gotta get new boss object first because the data_replacements still needs to be set if it's a same replacement
                                     new_boss_object = self.enemy_manager.get_new_boss_object(old_boss_object, new_boss, rand_seed)
+                                    # Boss spoiler is set later in generateSpawns from the actual spawn file so it matches what is written
+                                    self.spoilers["boss"][entity["name"]] = new_boss_object["name"]
                                     # same replacement
                                     if new_boss == old_boss_object["name"]:
                                         # still need to update msn mapping for mickey rules
@@ -375,7 +375,8 @@ class KingdomHearts2:
                             if createmod:
                                 rand_seed.add_ai(aimod)
         
-    def generate_files(self, outdir='', randomization={}, outzip=None):
+    def generate_files(self, outdir='', randomization={}, outzip=None, spoilers=None):
+        """If spoilers dict is passed, boss spoilers are rebuilt from actual spawn application so the log matches the game."""
         if DIAGNOSTICS:
             start_time = time.time()
             log_output("Starting generation of files", log_level=0)
@@ -391,7 +392,7 @@ class KingdomHearts2:
 
         force_story_boss_levels = "force_story_boss_levels" in utility_mods
         is_boss_rush = "is_boss_rush" in utility_mods
-        assetgenerator = AssetGenerator(modwriter, spawn_manager=self.spawn_manager, location_manager=self.location_manager, enemy_manager=self.enemy_manager, moose=randomization.get("memory_expansion", False), force_story_boss_levels=force_story_boss_levels, is_boss_rush=is_boss_rush)
+        assetgenerator = AssetGenerator(modwriter, spawn_manager=self.spawn_manager, location_manager=self.location_manager, enemy_manager=self.enemy_manager, ispc=randomization.get("memory_expansion", False), force_story_boss_levels=force_story_boss_levels, is_boss_rush=is_boss_rush)
         
 
         rvlrando = None
@@ -417,7 +418,7 @@ class KingdomHearts2:
         assetgenerator.generateLuaMods(lua_mods)
         assetgenerator.generateMsns(randomization.get("msn_map", {}), self.mission_manager.msninfo)
         # self.set_spawns() # TODO is this needed?
-        assetgenerator.generateSpawns(randomization.get("spawns", ""), randomization.get("subtract_map"))
+        assetgenerator.generateSpawns(randomization.get("spawns", ""), randomization.get("subtract_map"), spoilers=spoilers)
         
         if "apply_better_stt" in utility_mods:
             assetgenerator.generateBetterSTT()
@@ -429,7 +430,7 @@ class KingdomHearts2:
 
         if DIAGNOSTICS:
             end_time = time.time()
-            log_output(f"Files Generated: {end_time-start_time}s", log_level=0)
+            log_output("Files Generated: {}s".format(end_time-start_time), log_level=0)
         return assetgenerator.assets
 
     def generate_mod_basics(self, newname=None):

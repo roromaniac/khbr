@@ -9,24 +9,24 @@ class AiManager:
         self.script = self.script.replace("{"+str(original)+"}", str(new))
 
     def set_karma_limit(self, available_values):
-        karma_param = re.compile(r'push.s (.*)\n.*; trap_enemy_set_karma_limit')
+        karma_param = re.compile(r'pushImmf (.*)\n.*; trap_enemy_set_karma_limit')
         if karma_param.search(self.script):
-            self.script = karma_param.sub(lambda m: f"push.s {str(available_values.pop())}\n syscall 2, 76 ; trap_enemy_set_karma_limit ",  self.script)
+            self.script = karma_param.sub(lambda m: "pushImmf {}\n syscall 2, 76 ; trap_enemy_set_karma_limit ".format(str(available_values.pop())),  self.script)
             return
         return
     
     def add_when_dead(self, lines):
-        str_to_add = ': ; dead\n pop.sp 0\n'+'\n'.join(lines)
-        dead_param = re.compile(r': ;___label for action push.bd.*? ; ___ai (dead\n pop.sp 0)')
+        str_to_add = ': ; dead\n popToSp 0\n'+'\n'.join(lines)
+        dead_param = re.compile(r': ;___label for action pushFromPAi.*? ; ___ai (dead\n popToSp 0)')
         if dead_param.search(self.script):
             self.script = dead_param.sub(lambda m: str_to_add, self.script)
         else:
-            raise Exception(f"Error: Can not find dead action for {self.fn}")
+            raise Exception("Error: Can not find dead action for {}".format(self.fn))
 
     def drop_dataspace_orbs(self):
         self.add_when_dead([
-            ' push.d.sp 0',
-            ' push 10',
+            ' pushFromFSp 0',
+            ' pushImm 10',
             ' syscall 1, 278 ; trap_obj_scatter_prize_tr'
         ])
 
@@ -35,18 +35,18 @@ class AiManager:
     
 # IS_HADES_ESCAPE:
 #  syscall 1, 23 ; trap_area_world
-#  push 6
+#  pushImm 6
 #  sub
-#  seqz
-#  beqz RET_FALSE
+#  eqz
+#  jz RET_FALSE
 #  syscall 1, 24 ; trap_area_area
-#  push 5
+#  pushImm 5
 #  sub
-#  seqz
-#  beqz RET_FALSE
+#  eqz
+#  jz RET_FALSE
 #  syscall 1, 26 ; trap_area_battle_set
-#  push 111
+#  pushImm 111
 #  sub
-#  seqz
-#  beqz RET_FALSE
-#  b RET_TRUE
+#  eqz
+#  jz RET_FALSE
+#  jmp RET_TRUE

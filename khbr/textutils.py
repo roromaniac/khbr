@@ -1,5 +1,5 @@
 def final_fight_text(source_enemy, new_name):
-    key = f"{source_enemy['ObjectId']}-{source_enemy['Argument1']}-{source_enemy['Argument2']}"
+    key = "{}-{}-{}".format(source_enemy["ObjectId"], source_enemy["Argument1"], source_enemy["Argument2"])
     texts = {
         "2079-1-0": { # Final Xemnas
             "id": 18453,
@@ -27,10 +27,10 @@ def create_spoiler_text(spoilers):
     if spoilers["boss"]:
         text += 'BOSSES\n'
         for oldboss in sorted(spoilers["boss"]):
-            text += f"\t{oldboss} became {spoilers['boss'][oldboss]}\n"
+            text += "\t{} became {}\n".format(oldboss, spoilers["boss"][oldboss])
         text += '\n'
     if spoilers["enemy"]:
         text += 'ENEMIES\n'
         for oldenemy in sorted(spoilers["enemy"]):
-            text += f"\t{oldenemy} became {spoilers['enemy'][oldenemy]}\n"
+            text += "\t{} became {}\n".format(oldenemy, spoilers["enemy"][oldenemy])
     return text

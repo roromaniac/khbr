@@ -37,6 +37,8 @@ __pycache__
 
 dist
 khbr.egg-info
+devmod
+extracted_data
 
 client_secret.json
 sheets.googleapis.com-python.json

@@ -30,7 +30,7 @@ class SpawnManager:
 
     def modify_spawn(self, editname, spawnpoint):
         if editname not in self.roommodedits:
-            log_output(f"Warning: could not find {editname} method for editing spawn, leaving unmodified", log_level=0)
+            log_output("Warning: could not find {} method for editing spawn, leaving unmodified".format(editname), log_level=0)
             return
         self.roommodedits(spawnpoint)
 
@@ -82,8 +82,8 @@ class SpawnManager:
 
     def ax2_40(self, spawnpoint):
         # remove the buildings
-        for unitid in spawnpoint:
-            unitid["Entities"] = []
+        for spid in spawnpoint:
+            spid["Entities"] = []
 
     def ax2_50(self, spawnpoint):
         # remove the dragon
@@ -210,7 +210,7 @@ class SpawnManager:
     def getSpawnpoint(ardname, spawnpoint, altspawns={}):
         if spawnpoint in altspawns.keys():
             return altspawns[spawnpoint]
-        with open(os.path.join(KH2_DIR, "subfiles", "spawn", "ard", ardname, f"{spawnpoint}.spawn")) as f:
+        with open(os.path.join(KH2_DIR, "subfiles", "spawn", "ard", ardname, "{}.spawn".format(spawnpoint))) as f:
             return yaml.load(f, Loader=yaml.SafeLoader)
 
     @staticmethod
@@ -281,11 +281,11 @@ class SpawnManager:
         return new_enemy
 
     @staticmethod
-    def getunitid(spawnpoint, idnum):
-        for unitid in spawnpoint:
-            if unitid["Id"] == idnum:
-                return unitid
-        raise Exception("Unit ID not found!")
+    def getSpId(spawnpoint, idnum):
+        for spid in spawnpoint:
+            if spid["Id"] == idnum:
+                return spid
+        raise Exception("Spid not found!")
 
     @staticmethod
     def getNewUnit(defaults):

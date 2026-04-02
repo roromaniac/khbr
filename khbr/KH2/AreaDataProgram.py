@@ -1,9 +1,9 @@
 from khbr.randutils import log_output
 
 class AreaDataProgram:
-    def __init__(self, lines, moose=False):
+    def __init__(self, lines, ispc=False):
         self.lines = lines
-        self.moose = moose
+        self.ispc = ispc
         num_settings = len(''.join(lines).split("AreaSettings"))
         # if num_settings > 2:
         #     log_output(lines)
@@ -33,7 +33,7 @@ class AreaDataProgram:
     def add_command(self, command, parameters, set_for_settings=None):
         '''command is a word, parameters is a string'''
         '''adds not SetX comma'''
-        newline = f"{command} {parameters}"
+        newline = "{} {}".format(command, parameters)
         if command.startswith("Set"):
             newline = "\t"+newline
         if self.has_command(command):
@@ -77,13 +77,13 @@ class AreaDataProgram:
             return False
         return self.get_command("Mission").split(" ")[-1].replace('"','')
     def update_capacity(self, capacity=None):
-        if self.moose:
+        if self.ispc:
             self.remove_command("Capacity")
         elif capacity:
             self.add_command("Capacity", str(capacity))
     def set_jump(self, world, room, program, fadetype="16386", jumptype="2", entrance="0", set_for_settings=None):
         # TODO make this print a warning and not do anything if there is no existing jump
-        parameters = f"Type {jumptype} World {world} Area {room} Entrance {entrance} LocalSet {program} FadeType {fadetype}"
+        parameters = "Type {} World {} Area {} Entrance {} LocalSet {} FadeType {}".format(jumptype, world, room, entrance, program, fadetype)
         if self.has_command("SetJump"):
             self.add_command("SetJump", parameters, set_for_settings)
         else:
@@ -105,4 +105,4 @@ class AreaDataProgram:
         parameters = " ".join([f for f in flags])
         self.add_command("SetProgressFlag", parameters)
     def set_area_settings(self, x, y):
-        self.add_command("AreaSettings", f"{x} {y}")
+        self.add_command("AreaSettings", "{} {}".format(x,y))

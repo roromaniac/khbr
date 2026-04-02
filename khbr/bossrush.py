@@ -14,7 +14,7 @@ class openKH:
         self.workdir = workdir
     def _check_binary(self, binary):
         if not os.path.isfile(os.path.join(self.workdir, binary)):
-            raise Exception(f"{binary} not found")
+            raise Exception("{} not found".format(binary))
     def _run_binary(self, binary, args=[], inp='', debug=True):
         self._check_binary(binary)
         if debug:
@@ -188,7 +188,7 @@ def main(cli_args: list=[]):
         "route": 'random',
         "abilities_start_equipped": True,
         "randomize_starting_stuff": False,
-        "moose": False,
+        "platform": "pc",
         "open_menu_before_each_fight": False,
         "seed": "",
         "debug_inf_hp": False,
@@ -230,7 +230,7 @@ def main(cli_args: list=[]):
     options.add_argument("-randomize_starting_stuff", choices=['True', 'False'], default=last_settings.get("randomize_starting_stuff"))
     options.add_argument("-abilities_start_equipped", choices=['True', 'False'], default=last_settings.get("abilities_start_equipped"))
     options.add_argument("-open_menu_before_each_fight", choices=['True', 'False'], default=last_settings.get("open_menu_before_each_fight"))
-    options.add_argument("-moose", choices=["True", "False"], default=last_settings.get("moose"))
+    options.add_argument("-platform", choices=["ps2", "pc"], default=last_settings.get("platform"))
     options.add_argument("-seed", default=last_settings.get("seed"))
     options.add_argument("-debug_inf_hp", default=last_settings.get("debug_inf_hp"), choices=['True', 'False'])
     options.add_argument("-debug_no_damage_cap", default=last_settings.get("debug_no_damage_cap"), choices=['True', 'False'])
@@ -277,7 +277,7 @@ def main(cli_args: list=[]):
     moddir = os.path.join(openkh_dir, "mods", "kh2")
 
     seed_options = {
-        "memory_expansion": True if str(args.moose) == "True",
+        "memory_expansion": True if args.platform == "pc" else False,
         "always_set_retry": True,
         "apply_better_stt": True,
         "is_boss_rush": True,
@@ -294,7 +294,7 @@ def main(cli_args: list=[]):
 
     kh2 = KingdomHearts2()
     modwriter = ModWriter(os.path.join(moddir, "bossrush"))
-    assetgenerator = AssetGenerator(modwriter, spawn_manager=kh2.spawn_manager, location_manager=kh2.location_manager, enemy_manager=kh2.enemy_manager, moose=seed_options["memory_expansion"])
+    assetgenerator = AssetGenerator(modwriter, spawn_manager=kh2.spawn_manager, location_manager=kh2.location_manager, enemy_manager=kh2.enemy_manager, ispc=seed_options["memory_expansion"])
 
 
 
@@ -331,7 +331,7 @@ def main(cli_args: list=[]):
 
 
     seed = args.seed or str(int(time.time()))
-    log_output(f"Using Seed {seed}", log_level=0)
+    log_output("Using Seed {}".format(seed), log_level=0)
     random.seed(seed)
     
 
@@ -411,7 +411,7 @@ def main(cli_args: list=[]):
     modyml_fn = os.path.join(moddir, "bossrush", "mod.yml")
     modyml = yaml.load(open(modyml_fn), Loader=yaml.SafeLoader)
 
-    modyml["title"] = f"Boss Rush {seed}"
+    modyml["title"] = "Boss Rush {}".format(seed)
     modyml["description"] = json.dumps(settings_to_write, indent=2)
 
 
@@ -427,7 +427,7 @@ def main(cli_args: list=[]):
                 return a
         # Need a new asset
         newasset = {
-            "name": f"ard/us/{ardname}",
+            "name": "ard/us/{}".format(ardname),
             "method": "binarc",
             "source": []
         }
@@ -439,7 +439,7 @@ def main(cli_args: list=[]):
     asset = findRoomSource(modyml["assets"], "TT", "01")
     assetgenerator.generateEvt("TT", "01", 0x34, asset["source"], options={"jump_to":{"world":world, "room":room, "program":program}, "open_menu":True, "remove_event":True, "flags": ['0x84A'], "remove_excess_flags": True})
 
-    log_output(f"DEBUG boss_order {boss_order}")
+    log_output("DEBUG boss_order {}".format(boss_order))
     boss_order.pop(0)
 
     for new_boss_name in boss_order:
@@ -449,9 +449,9 @@ def main(cli_args: list=[]):
         newprogram = new_boss["program"] 
         if newprogram == None:
             newprogram = 0
-            log_output(f"Warning setting program to 0 for {current_boss}", log_level=1)
+            log_output("Warning setting program to 0 for {}".format(current_boss), log_level=1)
         asset = findRoomSource(modyml["assets"], world, room)
-        log_output(f"Making evt to jump to {new_boss['name']}")
+        log_output("Making evt to jump to {}".format(new_boss["name"]))
         set_for_settings = [1] if current_boss.get("name") in ["Hayner", "Vivi", "Setzer"] else None
         assetgenerator.generateEvt(world, room, current_boss.get("outprogram") or "all", asset["source"], options={"remove_event": True, "jump_to":{"world": newworld, "room": newroom, "program": newprogram, "set_for_settings": set_for_settings}, "fix_source_area_settings": "fix_source_area_settings" in current_boss.get("tags"), "open_menu": open_menu_before_each_fight, "remove_event":True})
         world = newworld
@@ -469,9 +469,9 @@ def main(cli_args: list=[]):
     asset = findRoomSource(modyml["assets"], "HE", "09")
     asset["source"] = [s for s in asset["source"] if not s["method"] == "copy"]
     new_program_text = open(os.path.join(os.path.dirname(__file__), "KH2", "data", "he09_bossrush_single.areadataprogram")).read()
-    he_script = AreaDataScript(new_program_text, moose=str(args.moose) == "True")
+    he_script = AreaDataScript(new_program_text, ispc=args.platform == "pc")
     he_prg = he_script.programs[0xc4]
-    if str(args.moose) == "True":
+    if args.platform == "pc":
         he_prg.add_packet_spec()
         he_prg.add_enemy_spec()
     programasset = assetgenerator.modwriter.writeAreaDataProgram("he09", "btl", 0xc4, he_prg.make_program())
@@ -511,7 +511,7 @@ def main(cli_args: list=[]):
 
             # effectively set level to choice
             lvup = yaml.load(open(os.path.join(os.path.dirname(__file__), "KH2", "data", "lvupVanilla.yml")), Loader=yaml.SafeLoader)
-            log_output(f"Setting all level stats to that of level {set_level}")
+            log_output("Setting all level stats to that of level {}".format(set_level))
             for c, char in lvup.items():
                 lvl_stats = char[set_level]
                 for l, level in char.items():

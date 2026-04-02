@@ -13,15 +13,15 @@ class EnemyManager:
         return [b for b in self.enemy_records if self.enemy_records[b]["type"] == "enemy"]
     def get_valid_bosses(self):
         return [b for b in self.enemy_records if self.enemy_records[b]["type"] == "boss"]
-    def set_enemies(self, moose=False, override={}):
+    def set_enemies(self, ispc=False, override={}):
         if not override:
             fn="full_enemy_records.json"
-            if moose:
-                fn = "full_enemy_records_moose.json"
+            if ispc:
+                fn = "full_enemy_records_pc.json"
             with open(os.path.join(self.basepath, fn)) as f:
                 self.enemy_records = json.load(f)
         else:
-            self.enemy_records = self.create_enemy_records(moose, override=override)
+            self.enemy_records = self.create_enemy_records(ispc, override=override)
 
     def get_enemies(self, options):
         #TODO other enemies aren't being disabled properly
@@ -65,7 +65,7 @@ class EnemyManager:
                 base[k] = v
         return base
 
-    def create_enemy_records(self, moose=False, getavail=True, override = {}):
+    def create_enemy_records(self, ispc=False, getavail=True, override = {}):
         defaults = get_schema()
         with open(os.path.join(self.basepath, "enemies.yaml")) as f:
             enemies_f = yaml.load(f, Loader=yaml.FullLoader)
@@ -80,9 +80,9 @@ class EnemyManager:
             for v in main["variations"]:
                 variation = dict(main["variations"][v])
                 variation["name"] = v
-                self.inheritConfig(main, variation, defaults, moose=moose)
+                self.inheritConfig(main, variation, defaults, ispc=ispc)
 
-                variation["category"] = self.getCategory(variation, moose=moose)
+                variation["category"] = self.getCategory(variation, ispc=ispc)
 
                 # TODO I'd like to make this better but I don't know how
                 parent = variation["variationof"] or name
@@ -98,13 +98,13 @@ class EnemyManager:
         for parent in parent_children_mapping:
             enemies[parent]["children"] = sorted(list(set(parent_children_mapping[parent])))
             for child in enemies[parent]["children"]:
-                self.inheritConfig(enemies[parent], enemies[child], defaults, moose=moose)
+                self.inheritConfig(enemies[parent], enemies[child], defaults, ispc=ispc)
 
         if getavail:
             # avail should only be filled in for parent bosses
             # I think this will work because of pass by reference
             bosses = {e: enemies[e] for e in enemies if enemies[e]["type"] == "boss" and enemies[e]["parent"] == enemies[e]["name"]}
-            self.assign_availability(bosses, moose)
+            self.assign_availability(bosses, ispc)
 
         return enemies
 
@@ -116,6 +116,30 @@ class EnemyManager:
             if self.enemy_records[name]["obj_id"] == id:
                 return self.enemy_records[name]
         return None
+    
+    def lookup_object_by_id_and_vars(self, obj_id, arg1, arg2):
+        """
+        Look up boss/enemy by ObjectId AND Argument1/Argument2 (vars).
+        This is needed because variants like Larxene and Larxene (Data) share the same obj_id
+        but differ by vars (Argument1/Argument2).
+        """
+        for name in self.enemy_records:
+            record = self.enemy_records[name]
+            if record["obj_id"] == obj_id:
+                # Check if vars match (Argument1/Argument2)
+                vars_match = False
+                if "vars" in record and len(record["vars"]) >= 2:
+                    if record["vars"][0] == arg1 and record["vars"][1] == arg2:
+                        vars_match = True
+                elif arg1 == 0 and arg2 == 0:
+                    # Default case: if record has no vars or empty vars, and args are 0,0, match
+                    if "vars" not in record or len(record["vars"]) == 0 or (len(record["vars"]) == 2 and record["vars"][0] == 0 and record["vars"][1] == 0):
+                        vars_match = True
+                
+                if vars_match:
+                    return record
+        # Fallback: if no exact match found, return first match by obj_id (for backwards compatibility)
+        return self.lookup_object_by_id(obj_id)
 
     def get_parent(self, name):
         child = self.enemy_records.get(name)
@@ -154,28 +178,28 @@ class EnemyManager:
         return new_enemy_object
 
     @staticmethod
-    def inheritConfig(parent, variation, defaults, moose=False):
+    def inheritConfig(parent, variation, defaults, ispc=False):
         # I don't know why this is sometimes called with parent == variation
         if parent == variation:
             return
-        if moose and "moose" in variation:
-            for k in variation["moose"]:
-                variation[k] = variation["moose"][k]
-        keys_to_add = {} # keys in MOOSE specific config not in overall
+        if ispc and "pc" in variation:
+            for k in variation["pc"]:
+                variation[k] = variation["pc"][k]
+        keys_to_add = {} # keys in pc specific config not in overall
         for k in parent:
-            if moose and k == "moose":
-                for k_moose in parent["moose"]:
-                    value = parent["moose"][k_moose]
+            if ispc and k == "pc":
+                for k_pc in parent["pc"]:
+                    value = parent["pc"][k_pc]
                     
-                    if k_moose not in parent:
-                        keys_to_add[k_moose] = value
-                    # Allow different blacklist/whitelists for MOOSE vs ps2
+                    if k_pc not in parent:
+                        keys_to_add[k_pc] = value
+                    # Allow different blacklist/whitelists for pc vs ps2
                     elif type(value) == list:
                         for v in value:
-                            if v not in parent[k_moose]:
-                                parent[k_moose].append(v)
+                            if v not in parent[k_pc]:
+                                parent[k_pc].append(v)
                     else:
-                        parent[k_moose] = parent["moose"][k_moose]
+                        parent[k_pc] = parent["pc"][k_pc]
         
         parent.update(keys_to_add)
         for k in parent:
@@ -196,9 +220,9 @@ class EnemyManager:
                         variation[d] = parent[d]
 
     @staticmethod
-    def getCategory(enemy, moose=False):
+    def getCategory(enemy, ispc=False):
         category = '-'.join(sorted(enemy["tags"]))
-        if not moose:
+        if not ispc:
             if enemy["sizeTag"]:
                 category = "-".join([category, enemy["sizeTag"]])
         if len(category) > 0 and category[0] == "-":
@@ -211,10 +235,11 @@ class EnemyManager:
             avail = [] # These are bosses that are allowed to be here
             for dest_boss_name in bosses:
                 dest_boss = bosses[dest_boss_name]
-                if dest_boss_name == source_boss_name:
-                    # Boss should always be allowed to be in it's own location
-                    avail.append(dest_boss_name)
-                    continue
+                # BOSS SHOULD BE ALLOWED TO BE BANNED FROM ITS OWN LOCATION
+                # if dest_boss_name == source_boss_name:
+                #     # Boss should always be allowed to be in it's own location
+                #     avail.append(dest_boss_name)
+                #     continue
                 if self.isReplacementBlocked(source_boss, dest_boss):
                     continue
                 if self.source_room_has_space(source_boss, dest_boss, maxsize):
@@ -230,7 +255,7 @@ class EnemyManager:
 
     def get_boss_list(self, options):
         nightmare_bosses = options.get("nightmare_bosses", False)
-        moose = options.get("memory_expansion", False)
+        ispc = options.get("memory_expansion", False)
         
         bosses = {}
 
@@ -280,10 +305,10 @@ class EnemyManager:
         return bosses
 
     @staticmethod
-    def source_room_has_space(source_boss, dest_boss, moose=False):
-        if moose:
+    def source_room_has_space(source_boss, dest_boss, ispc=False):
+        if ispc:
             return True
-        #log_output(f"{source_boss['name']} > {dest_boss['name']}: {source_boss['size']} + {dest_boss['room_size']} >= {maxsize}")
+        #log_output("{} > {}: {} + {} >= {}".format(source_boss["name"], dest_boss["name"], source_boss["size"], dest_boss["room_size"], maxsize))
         roommaxsize = source_boss["roommaxsize"] or LIMITED_SIZE
         availablespace = (roommaxsize - source_boss["room_size"]) * source_boss["roomsizemultiplier"]
         if availablespace - dest_boss["size"] < 0:
@@ -341,7 +366,7 @@ class EnemyManager:
         return '-'.join(categories)
 
 
-    def categorize_enemies(self, included_enemylist, combine_sizes=False, combine_ranged=False, separate_nobodys=True, other_enemies=False, moose=False):
+    def categorize_enemies(self, included_enemylist, combine_sizes=False, combine_ranged=False, separate_nobodys=True, other_enemies=False, ispc=False):
         categories = {}
         for e in included_enemylist:
             parent = self.enemy_records[e["parent"]]

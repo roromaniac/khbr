@@ -4,2774 +4,2774 @@ StackSize: 512
 TempSize: 512
 Triggers:
 - Key: 6
-  Addr: OBJ_DAMAGE
+  Addr: TR6
 - Key: 13
-  Addr: OBJ_FALL
+  Addr: TR13
 - Key: 1
-  Addr: OBJ_MAIN
+  Addr: TR1
 - Key: 0
-  Addr: OBJ_INIT
+  Addr: TR0
 Name: m_ex790_christm
 
 ---
 ; codeLabels: 
 ; codeRevealer: -l 209 -l 1630 -l 1904 -l 1963 -l 1964 -l 2058 -l 2075 -l 2080 -l 2095 -l 2172 -l 2369 -l 2425 -l 2506 -l 2572 -l 2682 -l 2736 -l 2758 -l 2771 -l 2809 -l 2985 -l 3054 -l 3233 -l 3310 -l 3318 -l 3502 -l 3629 -l 3673 -l 3705 -l 3737 -l 3751 -l 3912 -l 3947 -l 3995 -l 4029 -l 4063 -l 4078 -l 4091 -l 4116 -l 4177 -l 4211 -l 4250 -l 4265 -l 4278 -l 4303 -l 4359 -l 4393 -l 4469 -l 4585 -l 4949 -l 4962 -l 5041 -l 5077
  section .text
-OBJ_DAMAGE:
- pop.sp 0
- push.wp W0
- push.d.sp 0
- jal 4, L35
+TR6:
+ popToSp 0
+ pushFromPWp W0
+ pushFromFSp 0
+ gosub 4, L35
  ret 
 L35:
- pop.sp 4
- pop.sp 0
- push.d.sp 4
+ popToSp 4
+ popToSp 0
+ pushFromFSp 4
  syscall 2, 8 ; trap_damage_is_reaction (1 in, 1 out)
- beqz L67
- push.d.sp 0
- push 20
+ jz L67
+ pushFromFSp 0
+ pushImm 20
  add 
  dup 
- push.d.pop 0
- push 1
+ fetchValue 0
+ pushImm 1
  add 
  memcpy 0
- push.d.sp 0
- push.bd L5555 ; ___ai mode_revenge (L5555)
+ pushFromFSp 0
+ pushFromPAi L5555 ; ___ai mode_revenge (L5555)
  syscall 1, 8 ; trap_obj_act_start (2 in, 0 out)
- b L67
+ jmp L67
 L67:
- push 0
- push.d.sp.d 116
+ pushImm 0
+ pushFromFSpVal 116
  sub 
- snez 
+ neqz 
  dup 
- beqz L87
- push.s 600
- push.d.sp 0
- jal 4, L97
- sub.s 
- sltz.s 
- land 
+ jz L87
+ pushImmf 600
+ pushFromFSp 0
+ gosub 4, L97
+ subf 
+ infzf 
+ eqzv 
 L87:
- beqz L96
- push 3
- pop.sp.d 112
- b L96
+ jz L96
+ pushImm 3
+ popToSpVal 112
+ jmp L96
 L96:
  ret 
 L97:
- pop.sp 0
- push.d.sp 0
+ popToSp 0
+ pushFromFSp 0
  syscall 2, 23 ; trap_btlobj_target (1 in, 1 out)
  syscall 1, 120 ; trap_target_pos (1 in, 1 out)
- memcpy.sp 16, 48
- push.sp 48
- push.d.sp 0
+ memcpyToSp 16, 48
+ pushFromPSp 48
+ pushFromFSp 0
  syscall 1, 147 ; trap_obj_pos (1 in, 1 out)
- memcpy.sp 16, 64
- push.sp 64
+ memcpyToSp 16, 64
+ pushFromPSp 64
  syscall 0, 5 ; trap_vector_sub (2 in, 1 out)
- memcpy.sp 16, 80
- push.sp 80
- memcpy.sp 16, 16
- push.sp 16
- push 4
+ memcpyToSp 16, 80
+ pushFromPSp 80
+ memcpyToSp 16, 16
+ pushFromPSp 16
+ pushImm 4
  add 
- push.s 0
+ pushImmf 0
  memcpy 0
- push.sp 16
+ pushFromPSp 16
  syscall 0, 7 ; trap_vector_normalize (1 in, 1 out)
- pop.sp 32
- push.d.sp 32
+ popToSp 32
+ pushFromFSp 32
  ret 
-OBJ_FALL:
- push.wp W0
- push.s 0
+TR13:
+ pushFromPWp W0
+ pushImmf 0
  syscall 1, 128 ; trap_obj_sysjump (2 in, 0 out)
- push.wp W0
- push.d.pop 4
- push 4
- push.s 8
+ pushFromPWp W0
+ fetchValue 4
+ pushImm 4
+ pushImmf 8
  syscall 1, 11 ; trap_sysobj_motion_start (3 in, 0 out)
- push.wp W0
+ pushFromPWp W0
  syscall 1, 65 ; trap_obj_exec_fall (1 in, 0 out)
  ret 
-OBJ_MAIN:
- push.wp W0
- jal 4, L177
+TR1:
+ pushFromPWp W0
+ gosub 4, L177
  ret 
 L177:
- pop.sp 0
- push.d.sp 0
- push.bd L5290 ; ___ai appear (L5290)
+ popToSp 0
+ pushFromFSp 0
+ pushFromPAi L5290 ; ___ai appear (L5290)
  syscall 1, 8 ; trap_obj_act_start (2 in, 0 out)
- push.d.sp 0
- push.bd L5294 ; ___ai change_box (L5294)
+ pushFromFSp 0
+ pushFromPAi L5294 ; ___ai change_box (L5294)
  syscall 1, 9 ; trap_obj_act_push (2 in, 0 out)
 L191:
- push.d.sp 0
+ pushFromFSp 0
  syscall 1, 10 ; trap_obj_is_act_exec (1 in, 1 out)
- seqz 
- beqz L206
- push.d.sp 0
- push.bd L5460 ; ___ai mode_battle (L5460)
+ eqz 
+ jz L206
+ pushFromFSp 0
+ pushFromPAi L5460 ; ___ai mode_battle (L5460)
  syscall 1, 8 ; trap_obj_act_start (2 in, 0 out)
- b L206
+ jmp L206
 L206:
  halt 
- b L191
+ jmp L191
 D209:
 L209:
  ret 
-OBJ_INIT:
- pop.sp 0
- push.wp W0
- push.d.sp 0
- jal 4, L219
+TR0:
+ popToSp 0
+ pushFromPWp W0
+ pushFromFSp 0
+ gosub 4, L219
  ret 
 L219:
- pop.sp 4
- pop.sp 0
- push.d.sp 0
- push.d.sp 4
- jal 4, L1503
- push.d.sp 0
- push.wp W124
- jal 4, L1590
- push.d.sp 0
- push.wp W124
+ popToSp 4
+ popToSp 0
+ pushFromFSp 0
+ pushFromFSp 4
+ gosub 4, L1503
+ pushFromFSp 0
+ pushFromPWp W124
+ gosub 4, L1590
+ pushFromFSp 0
+ pushFromPWp W124
  syscall 1, 7 ; trap_obj_set_act_table (2 in, 0 out)
- push.wp W124
- push.bd L5290 ; ___ai appear (L5290)
- push 100
- push L1630
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
+ pushFromPWp W124
+ pushFromPAi L5290 ; ___ai appear (L5290)
+ pushImm 100
+ pushImm L1630
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
  syscall 1, 6 ; trap_act_table_add (12 in, 0 out)
- push.wp W124
- push.bd L5403 ; ___ai leave (L5403)
- push 196908
- push L1904
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
+ pushFromPWp W124
+ pushFromPAi L5403 ; ___ai leave (L5403)
+ pushImm 196908
+ pushImm L1904
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
  syscall 1, 6 ; trap_act_table_add (12 in, 0 out)
- push.wp W124
- push.bd L5448 ; ___ai dead (L5448)
- push 196908
- push L1964
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
+ pushFromPWp W124
+ pushFromPAi L5448 ; ___ai dead (L5448)
+ pushImm 196908
+ pushImm L1964
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
  syscall 1, 6 ; trap_act_table_add (12 in, 0 out)
- push.wp W124
- push.bd L5286 ; ___ai freeze (L5286)
- push 100
- push L2058
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
+ pushFromPWp W124
+ pushFromPAi L5286 ; ___ai freeze (L5286)
+ pushImm 100
+ pushImm L2058
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
  syscall 1, 6 ; trap_act_table_add (12 in, 0 out)
- push.wp W124
- push.bd L5570 ; ___ai event (L5570)
- push 196908
- push L2075
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push L2080
- push 0
+ pushFromPWp W124
+ pushFromPAi L5570 ; ___ai event (L5570)
+ pushImm 196908
+ pushImm L2075
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm L2080
+ pushImm 0
  syscall 1, 6 ; trap_act_table_add (12 in, 0 out)
- push.wp W124
- push.bd L5535 ; ___ai idle (L5535)
- push 100
- push L2095
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
+ pushFromPWp W124
+ pushFromPAi L5535 ; ___ai idle (L5535)
+ pushImm 100
+ pushImm L2095
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
  syscall 1, 6 ; trap_act_table_add (12 in, 0 out)
- push.wp W124
- push.bd L5341 ; ___ai idle_time (L5341)
- push 100
- push L2369
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
+ pushFromPWp W124
+ pushFromPAi L5341 ; ___ai idle_time (L5341)
+ pushImm 100
+ pushImm L2369
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
  syscall 1, 6 ; trap_act_table_add (12 in, 0 out)
- push.wp W124
- push.bd L5573 ; ___ai mode_battle_boss (L5573)
- push 100
- push L2425
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
+ pushFromPWp W124
+ pushFromPAi L5573 ; ___ai mode_battle_boss (L5573)
+ pushImm 100
+ pushImm L2425
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
  syscall 1, 6 ; trap_act_table_add (12 in, 0 out)
- push.wp W124
- push.bd L5588 ; ___ai mode_revenge_boss (L5588)
- push 100
- push L2506
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
+ pushFromPWp W124
+ pushFromPAi L5588 ; ___ai mode_revenge_boss (L5588)
+ pushImm 100
+ pushImm L2506
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
  syscall 1, 6 ; trap_act_table_add (12 in, 0 out)
- push.wp W124
- push.bd L5382 ; ___ai idle_fix (L5382)
- push 100
- push L2572
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
+ pushFromPWp W124
+ pushFromPAi L5382 ; ___ai idle_fix (L5382)
+ pushImm 100
+ pushImm L2572
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
  syscall 1, 6 ; trap_act_table_add (12 in, 0 out)
- push.wp W124
- push.bd L5372 ; ___ai footwork (L5372)
- push 100
- push L2771
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
+ pushFromPWp W124
+ pushFromPAi L5372 ; ___ai footwork (L5372)
+ pushImm 100
+ pushImm L2771
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
  syscall 1, 6 ; trap_act_table_add (12 in, 0 out)
- push.wp W124
- push.bd L5300 ; ___ai move_forward (L5300)
- push 100
- push L2809
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
+ pushFromPWp W124
+ pushFromPAi L5300 ; ___ai move_forward (L5300)
+ pushImm 100
+ pushImm L2809
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
  syscall 1, 6 ; trap_act_table_add (12 in, 0 out)
- push.wp W124
- push.bd L5356 ; ___ai high_jump (L5356)
- push 100
- push L3318
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
+ pushFromPWp W124
+ pushFromPAi L5356 ; ___ai high_jump (L5356)
+ pushImm 100
+ pushImm L3318
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
  syscall 1, 6 ; trap_act_table_add (12 in, 0 out)
- push.wp W124
- push.bd L5428 ; ___ai normal_jump_forward (L5428)
- push 100
- push L3502
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
+ pushFromPWp W124
+ pushFromPAi L5428 ; ___ai normal_jump_forward (L5428)
+ pushImm 100
+ pushImm L3502
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
  syscall 1, 6 ; trap_act_table_add (12 in, 0 out)
- push.wp W124
- push.bd L5466 ; ___ai normal_jump_slant_near (L5466)
- push 100
- push L3629
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
+ pushFromPWp W124
+ pushFromPAi L5466 ; ___ai normal_jump_slant_near (L5466)
+ pushImm 100
+ pushImm L3629
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
  syscall 1, 6 ; trap_act_table_add (12 in, 0 out)
- push.wp W124
- push.bd L5451 ; ___ai normal_jump_side (L5451)
- push 100
- push L3673
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
+ pushFromPWp W124
+ pushFromPAi L5451 ; ___ai normal_jump_side (L5451)
+ pushImm 100
+ pushImm L3673
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
  syscall 1, 6 ; trap_act_table_add (12 in, 0 out)
- push.wp W124
- push.bd L5406 ; ___ai normal_jump_slant_far (L5406)
- push 100
- push L3705
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
+ pushFromPWp W124
+ pushFromPAi L5406 ; ___ai normal_jump_slant_far (L5406)
+ pushImm 100
+ pushImm L3705
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
  syscall 1, 6 ; trap_act_table_add (12 in, 0 out)
- push.wp W124
- push.bd L5392 ; ___ai normal_jump_backward (L5392)
- push 100
- push L3737
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
+ pushFromPWp W124
+ pushFromPAi L5392 ; ___ai normal_jump_backward (L5392)
+ pushImm 100
+ pushImm L3737
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
  syscall 1, 6 ; trap_act_table_add (12 in, 0 out)
- push.wp W124
- push.bd L5315 ; ___ai high_jump_back (L5315)
- push 100
- push L3751
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
+ pushFromPWp W124
+ pushFromPAi L5315 ; ___ai high_jump_back (L5315)
+ pushImm 100
+ pushImm L3751
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
  syscall 1, 6 ; trap_act_table_add (12 in, 0 out)
- push.wp W124
- push.bd L5361 ; ___ai atk_kick (L5361)
- push 200
- push L3912
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
+ pushFromPWp W124
+ pushFromPAi L5361 ; ___ai atk_kick (L5361)
+ pushImm 200
+ pushImm L3912
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
  syscall 1, 6 ; trap_act_table_add (12 in, 0 out)
- push.wp W124
- push.bd L5544 ; ___ai atk_pumpkin (L5544)
- push 200
- push L3947
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
+ pushFromPWp W124
+ pushFromPAi L5544 ; ___ai atk_pumpkin (L5544)
+ pushImm 200
+ pushImm L3947
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
  syscall 1, 6 ; trap_act_table_add (12 in, 0 out)
- push.wp W124
- push.bd L5307 ; ___ai atk_change_box (L5307)
- push 200
- push L3995
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
+ pushFromPWp W124
+ pushFromPAi L5307 ; ___ai atk_change_box (L5307)
+ pushImm 200
+ pushImm L3995
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
  syscall 1, 6 ; trap_act_table_add (12 in, 0 out)
- push.wp W124
- push.bd L5524 ; ___ai atk_soldier_box_idle (L5524)
- push 200
- push L4029
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
+ pushFromPWp W124
+ pushFromPAi L5524 ; ___ai atk_soldier_box_idle (L5524)
+ pushImm 200
+ pushImm L4029
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
  syscall 1, 6 ; trap_act_table_add (12 in, 0 out)
- push.wp W124
- push.bd L5514 ; ___ai atk_soldier_box_gun (L5514)
- push 200
- push L4116
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
+ pushFromPWp W124
+ pushFromPAi L5514 ; ___ai atk_soldier_box_gun (L5514)
+ pushImm 200
+ pushImm L4116
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
  syscall 1, 6 ; trap_act_table_add (12 in, 0 out)
- push.wp W124
- push.bd L5331 ; ___ai atk_soldier_box_end (L5331)
- push 200
- push L4177
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
+ pushFromPWp W124
+ pushFromPAi L5331 ; ___ai atk_soldier_box_end (L5331)
+ pushImm 200
+ pushImm L4177
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
  syscall 1, 6 ; trap_act_table_add (12 in, 0 out)
- push.wp W124
- push.bd L5497 ; ___ai atk_soldier_idle (L5497)
- push 200
- push L4211
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
+ pushFromPWp W124
+ pushFromPAi L5497 ; ___ai atk_soldier_idle (L5497)
+ pushImm 200
+ pushImm L4211
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
  syscall 1, 6 ; trap_act_table_add (12 in, 0 out)
- push.wp W124
- push.bd L5484 ; ___ai atk_soldier_gun (L5484)
- push 200
- push L4303
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
+ pushFromPWp W124
+ pushFromPAi L5484 ; ___ai atk_soldier_gun (L5484)
+ pushImm 200
+ pushImm L4303
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
  syscall 1, 6 ; trap_act_table_add (12 in, 0 out)
- push.wp W124
- push.bd L5323 ; ___ai atk_soldier_end (L5323)
- push 200
- push L4359
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
+ pushFromPWp W124
+ pushFromPAi L5323 ; ___ai atk_soldier_end (L5323)
+ pushImm 200
+ pushImm L4359
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
  syscall 1, 6 ; trap_act_table_add (12 in, 0 out)
- push.wp W124
- push.bd L5294 ; ___ai change_box (L5294)
- push 100
- push L4393
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
+ pushFromPWp W124
+ pushFromPAi L5294 ; ___ai change_box (L5294)
+ pushImm 100
+ pushImm L4393
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
  syscall 1, 6 ; trap_act_table_add (12 in, 0 out)
- push.wp W124
- push.bd L5346 ; ___ai check_soldier_mode (L5346)
- push 100
- push L4469
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
+ pushFromPWp W124
+ pushFromPAi L5346 ; ___ai check_soldier_mode (L5346)
+ pushImm 100
+ pushImm L4469
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
  syscall 1, 6 ; trap_act_table_add (12 in, 0 out)
- push.wp W124
- push.bd L5460 ; ___ai mode_battle (L5460)
- push 100
- push L4585
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
+ pushFromPWp W124
+ pushFromPAi L5460 ; ___ai mode_battle (L5460)
+ pushImm 100
+ pushImm L4585
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
  syscall 1, 6 ; trap_act_table_add (12 in, 0 out)
- push.wp W124
- push.bd L5555 ; ___ai mode_revenge (L5555)
- push 100
- push L5041
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
+ pushFromPWp W124
+ pushFromPAi L5555 ; ___ai mode_revenge (L5555)
+ pushImm 100
+ pushImm L5041
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
  syscall 1, 6 ; trap_act_table_add (12 in, 0 out)
- push.wp W124
- push.bd L5602 ; ___ai revenge (L5602)
- push 65836
- push L5077
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
- push 0
+ pushFromPWp W124
+ pushFromPAi L5602 ; ___ai revenge (L5602)
+ pushImm 65836
+ pushImm L5077
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
+ pushImm 0
  syscall 1, 6 ; trap_act_table_add (12 in, 0 out)
- push.d.sp 0
- push.s 8
- jal 4, L5080
- push.d.sp 0
- push 0
- jal 4, L5094
- push.d.sp 0
- push.s 350
- push.s 450
- jal 4, L5215
- push.d.sp 0
- push 149
- push 0
+ pushFromFSp 0
+ pushImmf 8
+ gosub 4, L5080
+ pushFromFSp 0
+ pushImm 0
+ gosub 4, L5094
+ pushFromFSp 0
+ pushImmf 350
+ pushImmf 450
+ gosub 4, L5215
+ pushFromFSp 0
+ pushImm 149
+ pushImm 0
  syscall 2, 9 ; trap_btlobj_set_sheet (3 in, 0 out)
- push.d.sp 0
- push 28
+ pushFromFSp 0
+ pushImm 28
  add 
- push 112
+ pushImm 112
  memcpy 0
- push.d.sp 0
- push 16
+ pushFromFSp 0
+ pushImm 16
  add 
- push 0
+ pushImm 0
  memcpy 0
- push 0
- pop.sp.d 116
- push 0
- pop.sp.d 112
- push 0
- pop.sp.d 108
- push.d.sp 0
- jal 4, L5240
+ pushImm 0
+ popToSpVal 116
+ pushImm 0
+ popToSpVal 112
+ pushImm 0
+ popToSpVal 108
+ pushFromFSp 0
+ gosub 4, L5240
  ret 
 L1503:
- pop.sp 4
- pop.sp 0
- push.d.sp 0
- push.d.sp 4
- jal 4, L1538
- push -1
- pop.sp.d 28
- push.s 30
- pop.sp.d 32
- push.sp.d 72
- jal 4, L1547
- push.s 2000
- pop.sp.d 56
- push.s 1000
- pop.sp.d 60
+ popToSp 4
+ popToSp 0
+ pushFromFSp 0
+ pushFromFSp 4
+ gosub 4, L1538
+ pushImm -1
+ popToSpVal 28
+ pushImmf 30
+ popToSpVal 32
+ pushFromPSpVal 72
+ gosub 4, L1547
+ pushImmf 2000
+ popToSpVal 56
+ pushImmf 1000
+ popToSpVal 60
  ret 
 L1538:
- pop.sp 4
- pop.sp 0
- push.d.sp 4
- pop.sp.d 4
+ popToSp 4
+ popToSp 0
+ pushFromFSp 4
+ popToSpVal 4
  ret 
 L1547:
- pop.sp 0
- push.s 200
- pop.sp.d 0
- push.s 200
- pop.sp.d 4
- push.s 0
- pop.sp.d 8
- push 2
- pop.sp.d 12
- push.s 8
- pop.sp.d 16
- push 3
- pop.sp.d 20
- push.s 8
- pop.sp.d 24
- push 0
- pop.sp.d 32
+ popToSp 0
+ pushImmf 200
+ popToSpVal 0
+ pushImmf 200
+ popToSpVal 4
+ pushImmf 0
+ popToSpVal 8
+ pushImm 2
+ popToSpVal 12
+ pushImmf 8
+ popToSpVal 16
+ pushImm 3
+ popToSpVal 20
+ pushImmf 8
+ popToSpVal 24
+ pushImm 0
+ popToSpVal 32
  ret 
 L1590:
- pop.sp 4
- pop.sp 0
- push.d.sp 0
- push.d.sp 4
- jal 4, L1621
- push.d.sp 0
- push 16
+ popToSp 4
+ popToSp 0
+ pushFromFSp 0
+ pushFromFSp 4
+ gosub 4, L1621
+ pushFromFSp 0
+ pushImm 16
  add 
- push 0
+ pushImm 0
  memcpy 0
- push.d.sp 0
- push 20
+ pushFromFSp 0
+ pushImm 20
  add 
- push 0
+ pushImm 0
  memcpy 0
  ret 
 L1621:
- pop.sp 4
- pop.sp 0
- push.d.sp 4
+ popToSp 4
+ popToSp 0
+ pushFromFSp 4
  syscall 1, 5 ; trap_act_table_init (1 in, 0 out)
  ret 
 D1630:
-L1630: ;___label for action push.bd L5290 ; ___ai appear
- pop.sp 0
- push.d.sp 0
+L1630: ;___label for action pushFromPAi L5290 ; ___ai appear
+ popToSp 0
+ pushFromFSp 0
  syscall 1, 110 ; trap_obj_get_appear_way (1 in, 1 out)
  dup 
- push 2
+ pushImm 2
  sub 
- beqz L1652
+ jz L1652
  dup 
- push -1
+ pushImm -1
  sub 
- beqz L1652
- b L1658
+ jz L1652
+ jmp L1658
 L1652:
- push.d.sp 0
- jal 4, L1664
- b L1662
+ pushFromFSp 0
+ gosub 4, L1664
+ jmp L1662
 L1658:
- push.d.sp 0
- jal 4, L1827
+ pushFromFSp 0
+ gosub 4, L1827
 L1662:
  drop 
  ret 
 L1664:
- pop.sp 0
- jal 12, L1815
- memcpy.sp 16, 48
- push.sp 48
+ popToSp 0
+ gosub 12, L1815
+ memcpyToSp 16, 48
+ pushFromPSp 48
  syscall 1, 147 ; trap_obj_pos (1 in, 1 out)
- memcpy.sp 16, 64
- push.sp 64
- push.d.sp 0
+ memcpyToSp 16, 64
+ pushFromPSp 64
+ pushFromFSp 0
  syscall 1, 147 ; trap_obj_pos (1 in, 1 out)
- memcpy.sp 16, 80
- push.sp 80
+ memcpyToSp 16, 80
+ pushFromPSp 80
  syscall 0, 5 ; trap_vector_sub (2 in, 1 out)
- memcpy.sp 16, 96
- push.sp 96
- memcpy.sp 16, 16
- push.d.sp 0
- push.sp 16
+ memcpyToSp 16, 96
+ pushFromPSp 96
+ memcpyToSp 16, 16
+ pushFromFSp 0
+ pushFromPSp 16
  syscall 1, 79 ; trap_obj_set_dir (2 in, 0 out)
- push 4
- pop.sp 32
- push.d.sp 0
- push.d.pop 4
- push 44
- push.s 0
+ pushImm 4
+ popToSp 32
+ pushFromFSp 0
+ fetchValue 4
+ pushImm 44
+ pushImmf 0
  syscall 1, 11 ; trap_sysobj_motion_start (3 in, 0 out)
- push.d.sp 0
+ pushFromFSp 0
  syscall 1, 124 ; trap_obj_is_entry_fly (1 in, 1 out)
  dup 
- bnez L1735
- push.d.sp 0
+ jnz L1735
+ pushFromFSp 0
  syscall 1, 60 ; trap_obj_is_air (1 in, 1 out)
- seqz 
- lor 
+ eqz 
+ neqzv 
 L1735:
- beqz L1744
- push 0
- pop.sp 32
- b L1744
+ jz L1744
+ pushImm 0
+ popToSp 32
+ jmp L1744
 L1744:
- push.d.sp 0
- push.d.pop 4
- push.d.sp.d 32
+ pushFromFSp 0
+ fetchValue 4
+ pushFromFSpVal 32
  syscall 1, 20 ; trap_sysobj_fadein (2 in, 0 out)
 L1752:
- push.d.sp 0
- push.d.pop 4
+ pushFromFSp 0
+ fetchValue 4
  syscall 1, 14 ; trap_sysobj_motion_is_end (1 in, 1 out)
- seqz 
- beqz L1803
- jal 12, L1815
- memcpy.sp 16, 48
- push.sp 48
+ eqz 
+ jz L1803
+ gosub 12, L1815
+ memcpyToSp 16, 48
+ pushFromPSp 48
  syscall 1, 147 ; trap_obj_pos (1 in, 1 out)
- memcpy.sp 16, 64
- push.sp 64
- push.d.sp 0
+ memcpyToSp 16, 64
+ pushFromPSp 64
+ pushFromFSp 0
  syscall 1, 147 ; trap_obj_pos (1 in, 1 out)
- memcpy.sp 16, 80
- push.sp 80
+ memcpyToSp 16, 80
+ pushFromPSp 80
  syscall 0, 5 ; trap_vector_sub (2 in, 1 out)
- memcpy.sp 16, 96
- push.sp 96
- memcpy.sp 16, 16
- push.d.sp 0
- push.sp 16
+ memcpyToSp 16, 96
+ pushFromPSp 96
+ memcpyToSp 16, 16
+ pushFromFSp 0
+ pushFromPSp 16
  syscall 1, 4 ; trap_obj_wish_dir (2 in, 0 out)
  halt 
- b L1752
+ jmp L1752
 L1803:
- push.d.sp 0
- push.d.pop 4
- push.d.sp 32
- push.s 0
+ pushFromFSp 0
+ fetchValue 4
+ pushFromFSp 32
+ pushImmf 0
  syscall 1, 11 ; trap_sysobj_motion_start (3 in, 0 out)
  ret 
 L1815:
- push.sp 0
- push 4
+ pushFromPSp 0
+ pushImm 4
  add 
  syscall 1, 3 ; trap_sysobj_player (0 in, 1 out)
  memcpy 0
- push.sp 0
+ pushFromPSp 0
  ret 
 L1827:
- pop.sp 0
- push.d.sp 0
- push.d.pop 4
- push 0
- push.d.sp 0
- push 0
+ popToSp 0
+ pushFromFSp 0
+ fetchValue 4
+ pushImm 0
+ pushFromFSp 0
+ pushImm 0
  syscall 1, 67 ; trap_obj_motion_get_length (2 in, 1 out)
  syscall 0, 17 ; trap_random_getf (1 in, 1 out)
- push.s 0
+ pushImmf 0
  syscall 1, 61 ; trap_sysobj_motion_frame_start (4 in, 0 out)
- push.d.sp 0
- jal 4, L1855
+ pushFromFSp 0
+ gosub 4, L1855
  ret 
 L1855:
- pop.sp 0
- jal 4, L1874
+ popToSp 0
+ gosub 4, L1874
 L1859:
  syscall 1, 301 ; trap_tutorial_is_open (0 in, 1 out)
- beqz L1866
+ jz L1866
  halt 
- b L1859
+ jmp L1859
 L1866:
- push.s 30
+ pushImmf 30
  syscall 0, 17 ; trap_random_getf (1 in, 1 out)
- jal 4, L1882
+ gosub 4, L1882
  ret 
 L1874:
  syscall 1, 34 ; trap_event_is_exec (0 in, 1 out)
- beqz L1881
+ jz L1881
  halt 
- b L1874
+ jmp L1874
 L1881:
  ret 
 L1882:
- pop.sp 0
+ popToSp 0
 L1884:
- push.d.sp 0
- push.s 0
- sub.s 
- sgtz.s 
- beqz L1903
- push.d.sp 0
+ pushFromFSp 0
+ pushImmf 0
+ subf 
+ supzf 
+ jz L1903
+ pushFromFSp 0
  syscall 0, 3 ; trap_frametime (0 in, 1 out)
- sub.s 
- pop.sp 0
+ subf 
+ popToSp 0
  halt 
- b L1884
+ jmp L1884
 L1903:
  ret 
-L1904: ;___label for action push.bd L5403 ; ___ai leave
- pop.sp 0
- push.d.sp 0
- push.d.pop 4
- push 45
- push.s 0
+L1904: ;___label for action pushFromPAi L5403 ; ___ai leave
+ popToSp 0
+ pushFromFSp 0
+ fetchValue 4
+ pushImm 45
+ pushImmf 0
  syscall 1, 11 ; trap_sysobj_motion_start (3 in, 0 out)
- push.d.sp 0
- push 1
- push 1
- push 0
+ pushFromFSp 0
+ pushImm 1
+ pushImm 1
+ pushImm 0
  syscall 1, 87 ; trap_obj_effect_start_bind (4 in, 1 out)
  drop 
- push.d.sp 0
- push 3
+ pushFromFSp 0
+ pushImm 3
  syscall 1, 70 ; trap_obj_set_flag (2 in, 0 out)
- push.d.sp 0
- push.d.pop 4
- push.s 30
+ pushFromFSp 0
+ fetchValue 4
+ pushImmf 30
  syscall 1, 19 ; trap_sysobj_fadeout (2 in, 0 out)
- push.s 30
- jal 4, L1882
- push.d.sp 0
+ pushImmf 30
+ gosub 4, L1882
+ pushFromFSp 0
  syscall 1, 28 ; trap_obj_leave (1 in, 0 out)
- jal 4, L1960
+ gosub 4, L1960
  ret 
 L1960:
  halt 
- b L1960
+ jmp L1960
 L1963:
  ret 
-L1964: ;___label for action push.bd L5448 ; ___ai dead
- pop.sp 0
- push.d.sp 0
- jal 4, L1971
+L1964: ;___label for action pushFromPAi L5448 ; ___ai dead
+ popToSp 0
+ pushFromFSp 0
+ gosub 4, L1971
  ret 
 L1971:
- pop.sp 0
- push.d.sp.d 28
- push 0
+ popToSp 0
+ pushFromFSpVal 28
+ pushImm 0
  sub 
- sgez 
- beqz L1990
- push.d.sp 0
- push.d.sp.d 28
+ msbi 
+ jz L1990
+ pushFromFSp 0
+ pushFromFSpVal 28
  syscall 1, 92 ; trap_obj_scatter_prize (2 in, 0 out)
- b L1990
+ jmp L1990
 L1990:
- push.d.sp 0
- push 2
- push 1
- push 0
+ pushFromFSp 0
+ pushImm 2
+ pushImm 1
+ pushImm 0
  syscall 1, 87 ; trap_obj_effect_start_bind (4 in, 1 out)
- pop.sp 4
- push.d.sp 4
+ popToSp 4
+ pushFromFSp 4
  syscall 0, 79 ; trap_effect_add_dead_block (1 in, 0 out)
- push.d.sp 0
- push 3
+ pushFromFSp 0
+ pushImm 3
  syscall 1, 70 ; trap_obj_set_flag (2 in, 0 out)
- push.d.sp 0
- push 6
+ pushFromFSp 0
+ pushImm 6
  syscall 1, 70 ; trap_obj_set_flag (2 in, 0 out)
- push.d.sp.d 32
- push.s 0.5
- mul.s 
- jal 4, L1882
- push.d.sp 0
- push.d.pop 4
- push.d.sp.d 32
- push.s 0.5
- mul.s 
+ pushFromFSpVal 32
+ pushImmf 0.5
+ mulf 
+ gosub 4, L1882
+ pushFromFSp 0
+ fetchValue 4
+ pushFromFSpVal 32
+ pushImmf 0.5
+ mulf 
  syscall 1, 19 ; trap_sysobj_fadeout (2 in, 0 out)
- push.d.sp.d 32
- push.s 0.5
- mul.s 
- jal 4, L1882
- push.d.sp 0
+ pushFromFSpVal 32
+ pushImmf 0.5
+ mulf 
+ gosub 4, L1882
+ pushFromFSp 0
  syscall 1, 28 ; trap_obj_leave (1 in, 0 out)
- jal 4, L1960
+ gosub 4, L1960
  ret 
-L2058: ;___label for action push.bd L5286 ; ___ai freeze
- pop.sp 0
- push.d.sp 0
- push.d.pop 4
- push 0
- push.s 0
+L2058: ;___label for action pushFromPAi L5286 ; ___ai freeze
+ popToSp 0
+ pushFromFSp 0
+ fetchValue 4
+ pushImm 0
+ pushImmf 0
  syscall 1, 11 ; trap_sysobj_motion_start (3 in, 0 out)
- jal 4, L1960
+ gosub 4, L1960
  ret 
-L2075: ;___label for action push.bd L5570 ; ___ai event
- pop.sp 0
- jal 4, L1960
+L2075: ;___label for action pushFromPAi L5570 ; ___ai event
+ popToSp 0
+ gosub 4, L1960
  ret 
-L2080: ;___callback for action push.bd L5570 ; ___ai event
- pop.sp 0
- push.d.sp 0
- push.d.pop 4
- push 0
- push.s 0
+L2080: ;___callback for action pushFromPAi L5570 ; ___ai event
+ popToSp 0
+ pushFromFSp 0
+ fetchValue 4
+ pushImm 0
+ pushImmf 0
  syscall 1, 11 ; trap_sysobj_motion_start (3 in, 0 out)
  ret 
-L2095: ;___label for action push.bd L5535 ; ___ai idle
- pop.sp 0
- push.d.sp 0
- push 0
- push 0
- push -1
- jal 4, L2111
+L2095: ;___label for action pushFromPAi L5535 ; ___ai idle
+ popToSp 0
+ pushFromFSp 0
+ pushImm 0
+ pushImm 0
+ pushImm -1
+ gosub 4, L2111
  ret 
 L2111:
- pop.sp 4
- pop.sp 8
- pop.sp 12
- pop.sp 0
- push.d.sp 0
- jal 8, L2208
- push.d.sp 8
- push 3
+ popToSp 4
+ popToSp 8
+ popToSp 12
+ popToSp 0
+ pushFromFSp 0
+ gosub 8, L2208
+ pushFromFSp 8
+ pushImm 3
  sub 
- snez 
- beqz L2138
- push.d.sp 0
- jal 8, L2237
- b L2138
+ neqz 
+ jz L2138
+ pushFromFSp 0
+ gosub 8, L2237
+ jmp L2138
 L2138:
- push.d.sp 0
- push.d.pop 4
- push.d.sp 12
- push.d.sp 0
- push.d.sp 12
- jal 8, L2276
+ pushFromFSp 0
+ fetchValue 4
+ pushFromFSp 12
+ pushFromFSp 0
+ pushFromFSp 12
+ gosub 8, L2276
  syscall 1, 12 ; trap_sysobj_motion_change (3 in, 0 out)
 L2152:
- push.d.sp 0
- push.d.pop 4
+ pushFromFSp 0
+ fetchValue 4
  syscall 1, 14 ; trap_sysobj_motion_is_end (1 in, 1 out)
- seqz 
- beqz L2185
+ eqz 
+ jz L2185
  halt 
- push.d.sp 0
- push.d.sp 12
- jal 8, L2338
- beqz L2174
- b L2185
+ pushFromFSp 0
+ pushFromFSp 12
+ gosub 8, L2338
+ jz L2174
+ jmp L2185
 L2172:
- b L2174
+ jmp L2174
 L2174:
- push.d.sp 0
+ pushFromFSp 0
  syscall 2, 5 ; trap_enemy_is_no_control (1 in, 1 out)
- beqz L2183
+ jz L2183
  halt 
- b L2174
+ jmp L2174
 L2183:
- b L2152
+ jmp L2152
 L2185:
- push.d.sp 4
- push 0
+ pushFromFSp 4
+ pushImm 0
  sub 
- sgez 
- beqz L2207
- push.d.sp 0
- push.d.pop 4
- push.d.sp 4
- push.s 0
+ msbi 
+ jz L2207
+ pushFromFSp 0
+ fetchValue 4
+ pushFromFSp 4
+ pushImmf 0
  syscall 1, 12 ; trap_sysobj_motion_change (3 in, 0 out)
- b L2207
+ jmp L2207
 L2207:
  ret 
 L2208:
- pop.sp 0
+ popToSp 0
 L2210:
- push.d.sp 0
+ pushFromFSp 0
  syscall 1, 124 ; trap_obj_is_entry_fly (1 in, 1 out)
- seqz 
+ eqz 
  dup 
- beqz L2223
- push.d.sp 0
+ jz L2223
+ pushFromFSp 0
  syscall 1, 60 ; trap_obj_is_air (1 in, 1 out)
- land 
+ eqzv 
 L2223:
  dup 
- bnez L2231
- push.d.sp 0
+ jnz L2231
+ pushFromFSp 0
  syscall 2, 5 ; trap_enemy_is_no_control (1 in, 1 out)
- lor 
+ neqzv 
 L2231:
- beqz L2236
+ jz L2236
  halt 
- b L2210
+ jmp L2210
 L2236:
  ret 
 L2237:
- pop.sp 0
- push.d.sp 0
+ popToSp 0
+ pushFromFSp 0
  syscall 2, 23 ; trap_btlobj_target (1 in, 1 out)
  syscall 1, 120 ; trap_target_pos (1 in, 1 out)
- memcpy.sp 16, 32
- push.sp 32
- push.d.sp 0
+ memcpyToSp 16, 32
+ pushFromPSp 32
+ pushFromFSp 0
  syscall 1, 147 ; trap_obj_pos (1 in, 1 out)
- memcpy.sp 16, 48
- push.sp 48
+ memcpyToSp 16, 48
+ pushFromPSp 48
  syscall 0, 5 ; trap_vector_sub (2 in, 1 out)
- memcpy.sp 16, 64
- push.sp 64
- memcpy.sp 16, 16
- push.d.sp 0
- push.sp 16
+ memcpyToSp 16, 64
+ pushFromPSp 64
+ memcpyToSp 16, 16
+ pushFromFSp 0
+ pushFromPSp 16
  syscall 1, 4 ; trap_obj_wish_dir (2 in, 0 out)
  ret 
 L2276:
- pop.sp 4
- pop.sp 0
- push.d.sp 0
- push.d.pop 36
- pop.sp 8
- push.d.sp 4
+ popToSp 4
+ popToSp 0
+ pushFromFSp 0
+ fetchValue 36
+ popToSp 8
+ pushFromFSp 4
  dup 
- push 0
+ pushImm 0
  sub 
- beqz L2297
- b L2334
+ jz L2297
+ jmp L2334
 L2297:
- push.d.sp 0
- push.d.pop 4
+ pushFromFSp 0
+ fetchValue 4
  syscall 1, 15 ; trap_sysobj_motion_id (1 in, 1 out)
- push 2
+ pushImm 2
  sub 
- snez 
+ neqz 
  dup 
- beqz L2323
- push.d.sp 0
- push.d.pop 4
+ jz L2323
+ pushFromFSp 0
+ fetchValue 4
  syscall 1, 15 ; trap_sysobj_motion_id (1 in, 1 out)
- push 1
+ pushImm 1
  sub 
- snez 
- land 
+ neqz 
+ eqzv 
 L2323:
- beqz L2332
- push.s 0
- pop.sp 8
- b L2332
+ jz L2332
+ pushImmf 0
+ popToSp 8
+ jmp L2332
 L2332:
- b L2334
+ jmp L2334
 L2334:
  drop 
- push.d.sp 8
+ pushFromFSp 8
  ret 
 L2338:
- pop.sp 4
- pop.sp 0
- push 0
- pop.sp 8
- push.d.sp 0
- push.d.pop 4
+ popToSp 4
+ popToSp 0
+ pushImm 0
+ popToSp 8
+ pushFromFSp 0
+ fetchValue 4
  syscall 1, 15 ; trap_sysobj_motion_id (1 in, 1 out)
- push.d.sp 4
+ pushFromFSp 4
  sub 
- snez 
- beqz L2366
- push 1
- pop.sp 8
- b L2366
+ neqz 
+ jz L2366
+ pushImm 1
+ popToSp 8
+ jmp L2366
 L2366:
- push.d.sp 8
+ pushFromFSp 8
  ret 
-L2369: ;___label for action push.bd L5341 ; ___ai idle_time
- pop.sp 0
- push.s 15
- push.s 45
+L2369: ;___label for action pushFromPAi L5341 ; ___ai idle_time
+ popToSp 0
+ pushImmf 15
+ pushImmf 45
  syscall 0, 18 ; trap_random_range (2 in, 1 out)
- pop.sp 4
- push.d.sp 0
- jal 4, L2208
- push.d.sp 0
- jal 4, L2237
- push.d.sp 0
- push.d.pop 4
- push 0
- push.d.sp 0
- push 0
- jal 4, L2276
+ popToSp 4
+ pushFromFSp 0
+ gosub 4, L2208
+ pushFromFSp 0
+ gosub 4, L2237
+ pushFromFSp 0
+ fetchValue 4
+ pushImm 0
+ pushFromFSp 0
+ pushImm 0
+ gosub 4, L2276
  syscall 1, 12 ; trap_sysobj_motion_change (3 in, 0 out)
 L2405:
- push.d.sp 4
- push.s 0
- sub.s 
- sgtz.s 
- beqz L2424
- push.d.sp 4
+ pushFromFSp 4
+ pushImmf 0
+ subf 
+ supzf 
+ jz L2424
+ pushFromFSp 4
  syscall 0, 3 ; trap_frametime (0 in, 1 out)
- sub.s 
- pop.sp 4
+ subf 
+ popToSp 4
  halt 
- b L2405
+ jmp L2405
 L2424:
  ret 
-L2425: ;___label for action push.bd L5573 ; ___ai mode_battle_boss
- pop.sp 0
- push.d.sp 0
- push 2
- jal 4, L2491
- push.d.sp 0
- push.d.pop 24
+L2425: ;___label for action pushFromPAi L5573 ; ___ai mode_battle_boss
+ popToSp 0
+ pushFromFSp 0
+ pushImm 2
+ gosub 4, L2491
+ pushFromFSp 0
+ fetchValue 24
  dup 
- push 0
+ pushImm 0
  sub 
- beqz L2447
- b L2455
+ jz L2447
+ jmp L2455
 L2447:
- push.d.sp 0
- push.bd L5478 ; ___ai btl_normal (L5478)
+ pushFromFSp 0
+ pushFromPAi L5478 ; ___ai btl_normal (L5478)
  syscall 1, 8 ; trap_obj_act_start (2 in, 0 out)
- b L2489
+ jmp L2489
 L2455:
  dup 
- push 1
+ pushImm 1
  sub 
- beqz L2464
- b L2472
+ jz L2464
+ jmp L2472
 L2464:
- push.d.sp 0
- push.bd L5492 ; ___ai btl_hard (L5492)
+ pushFromFSp 0
+ pushFromPAi L5492 ; ___ai btl_hard (L5492)
  syscall 1, 8 ; trap_obj_act_start (2 in, 0 out)
- b L2489
+ jmp L2489
 L2472:
  dup 
- push 2
+ pushImm 2
  sub 
- beqz L2481
- b L2489
+ jz L2481
+ jmp L2489
 L2481:
- push.d.sp 0
- push.bd L5506 ; ___ai btl_super_hard (L5506)
+ pushFromFSp 0
+ pushFromPAi L5506 ; ___ai btl_super_hard (L5506)
  syscall 1, 8 ; trap_obj_act_start (2 in, 0 out)
- b L2489
+ jmp L2489
 L2489:
  drop 
  ret 
 L2491:
- pop.sp 4
- pop.sp 0
- push.d.sp 0
+ popToSp 4
+ popToSp 0
+ pushFromFSp 0
  syscall 2, 23 ; trap_btlobj_target (1 in, 1 out)
- push.d.sp 0
- push.d.sp 4
+ pushFromFSp 0
+ pushFromFSp 4
  syscall 1, 121 ; trap_target_search (3 in, 0 out)
  ret 
-L2506: ;___label for action push.bd L5588 ; ___ai mode_revenge_boss
- pop.sp 0
- push.d.sp 0
- push 2
- jal 4, L2491
- push.d.sp 0
- push.d.pop 24
+L2506: ;___label for action pushFromPAi L5588 ; ___ai mode_revenge_boss
+ popToSp 0
+ pushFromFSp 0
+ pushImm 2
+ gosub 4, L2491
+ pushFromFSp 0
+ fetchValue 24
  dup 
- push 0
+ pushImm 0
  sub 
- beqz L2528
- b L2536
+ jz L2528
+ jmp L2536
 L2528:
- push.d.sp 0
- push.bd L5538 ; ___ai rvg_normal (L5538)
+ pushFromFSp 0
+ pushFromPAi L5538 ; ___ai rvg_normal (L5538)
  syscall 1, 8 ; trap_obj_act_start (2 in, 0 out)
- b L2570
+ jmp L2570
 L2536:
  dup 
- push 1
+ pushImm 1
  sub 
- beqz L2545
- b L2553
+ jz L2545
+ jmp L2553
 L2545:
- push.d.sp 0
- push.bd L5550 ; ___ai rvg_hard (L5550)
+ pushFromFSp 0
+ pushFromPAi L5550 ; ___ai rvg_hard (L5550)
  syscall 1, 8 ; trap_obj_act_start (2 in, 0 out)
- b L2570
+ jmp L2570
 L2553:
  dup 
- push 2
+ pushImm 2
  sub 
- beqz L2562
- b L2570
+ jz L2562
+ jmp L2570
 L2562:
- push.d.sp 0
- push.bd L5562 ; ___ai rvg_super_hard (L5562)
+ pushFromFSp 0
+ pushFromPAi L5562 ; ___ai rvg_super_hard (L5562)
  syscall 1, 8 ; trap_obj_act_start (2 in, 0 out)
- b L2570
+ jmp L2570
 L2570:
  drop 
  ret 
-L2572: ;___label for action push.bd L5382 ; ___ai idle_fix
- pop.sp 0
- push.s 30
- push.s 40
+L2572: ;___label for action pushFromPAi L5382 ; ___ai idle_fix
+ popToSp 0
+ pushImmf 30
+ pushImmf 40
  syscall 0, 18 ; trap_random_range (2 in, 1 out)
- pop.sp 4
- push.d.sp 0
- push.d.sp 4
- push.s 0
- push.s 0
- push 0
- jal 4, L2600
+ popToSp 4
+ pushFromFSp 0
+ pushFromFSp 4
+ pushImmf 0
+ pushImmf 0
+ pushImm 0
+ gosub 4, L2600
  ret 
 L2600:
- pop.sp 4
- pop.sp 8
- pop.sp 12
- pop.sp 16
- pop.sp 0
- push 0
- pop.sp 20
- push.d.sp 0
- push.d.pop 4
- push.d.sp 20
- push.s 8
+ popToSp 4
+ popToSp 8
+ popToSp 12
+ popToSp 16
+ popToSp 0
+ pushImm 0
+ popToSp 20
+ pushFromFSp 0
+ fetchValue 4
+ pushFromFSp 20
+ pushImmf 8
  syscall 1, 12 ; trap_sysobj_motion_change (3 in, 0 out)
- push 0
- pop.sp 24
+ pushImm 0
+ popToSp 24
 L2631:
- push.s 0
- push.d.sp 16
- sub.s 
- sltz.s 
- beqz L2770
- push.s 0
- push.d.sp 12
- sub.s 
- sltz.s 
+ pushImmf 0
+ pushFromFSp 16
+ subf 
+ infzf 
+ jz L2770
+ pushImmf 0
+ pushFromFSp 12
+ subf 
+ infzf 
  dup 
- beqz L2659
- push.d.sp 0
- jal 12, L97
- push.d.sp 12
- sub.s 
- sltz.s 
- land 
+ jz L2659
+ pushFromFSp 0
+ gosub 12, L97
+ pushFromFSp 12
+ subf 
+ infzf 
+ eqzv 
 L2659:
- beqz L2694
- push.d.sp 4
- push 1
+ jz L2694
+ pushFromFSp 4
+ pushImm 1
  sub 
- sltz 
+ msb 
  dup 
- bnez L2678
- push.d.sp 4
- push.d.sp 24
+ jnz L2678
+ pushFromFSp 4
+ pushFromFSp 24
  sub 
- sltz 
- lor 
+ msb 
+ neqzv 
 L2678:
- beqz L2684
- b L2770
+ jz L2684
+ jmp L2770
 L2682:
- b L2692
+ jmp L2692
 L2684:
- push.d.sp 24
- push 1
+ pushFromFSp 24
+ pushImm 1
  add 
- pop.sp 24
+ popToSp 24
 L2692:
- b L2694
+ jmp L2694
 L2694:
- push.s 0
- push.d.sp 8
- sub.s 
- sltz.s 
+ pushImmf 0
+ pushFromFSp 8
+ subf 
+ infzf 
  dup 
- beqz L2713
- push.d.sp 0
- jal 12, L97
- push.d.sp 8
- sub.s 
- sgtz.s 
- land 
+ jz L2713
+ pushFromFSp 0
+ gosub 12, L97
+ pushFromFSp 8
+ subf 
+ supzf 
+ eqzv 
 L2713:
- beqz L2748
- push.d.sp 4
- push 1
+ jz L2748
+ pushFromFSp 4
+ pushImm 1
  sub 
- sltz 
+ msb 
  dup 
- bnez L2732
- push.d.sp 4
- push.d.sp 24
+ jnz L2732
+ pushFromFSp 4
+ pushFromFSp 24
  sub 
- sltz 
- lor 
+ msb 
+ neqzv 
 L2732:
- beqz L2738
- b L2770
+ jz L2738
+ jmp L2770
 L2736:
- b L2746
+ jmp L2746
 L2738:
- push.d.sp 24
- push 1
+ pushFromFSp 24
+ pushImm 1
  add 
- pop.sp 24
+ popToSp 24
 L2746:
- b L2748
+ jmp L2748
 L2748:
- push.d.sp 0
- push.d.sp 20
- jal 12, L2338
- beqz L2760
- b L2770
+ pushFromFSp 0
+ pushFromFSp 20
+ gosub 12, L2338
+ jz L2760
+ jmp L2770
 L2758:
- b L2760
+ jmp L2760
 L2760:
- push.d.sp 16
+ pushFromFSp 16
  syscall 0, 3 ; trap_frametime (0 in, 1 out)
- sub.s 
- pop.sp 16
+ subf 
+ popToSp 16
  halt 
- b L2631
+ jmp L2631
 L2770:
  ret 
-L2771: ;___label for action push.bd L5372 ; ___ai footwork
- pop.sp 0
- push.d.sp 0
- jal 4, L2802
- push.d.sp 0
- push.d.pop 4
- push 47
- push.s 8
+L2771: ;___label for action pushFromPAi L5372 ; ___ai footwork
+ popToSp 0
+ pushFromFSp 0
+ gosub 4, L2802
+ pushFromFSp 0
+ fetchValue 4
+ pushImm 47
+ pushImmf 8
  syscall 1, 12 ; trap_sysobj_motion_change (3 in, 0 out)
 L2789:
- push.d.sp 0
- push.d.pop 4
+ pushFromFSp 0
+ fetchValue 4
  syscall 1, 14 ; trap_sysobj_motion_is_end (1 in, 1 out)
- seqz 
- beqz L2801
+ eqz 
+ jz L2801
  halt 
- b L2789
+ jmp L2789
 L2801:
  ret 
 L2802:
- pop.sp 0
- push.d.sp 0
- jal 4, L2237
+ popToSp 0
+ pushFromFSp 0
+ gosub 4, L2237
  ret 
-L2809: ;___label for action push.bd L5300 ; ___ai move_forward
- pop.sp 0
- push.s 800
- push.s 1000
+L2809: ;___label for action pushFromPAi L5300 ; ___ai move_forward
+ popToSp 0
+ pushImmf 800
+ pushImmf 1000
  syscall 0, 18 ; trap_random_range (2 in, 1 out)
- pop.sp 16
- push.s 800
- pop.sp 12
- push.s 0
- pop.sp 8
- push.s 0
- pop.sp 4
- push.d.sp 0
- push.d.sp 16
- push.d.sp 4
- push.d.sp 12
- push.d.sp 8
- jal 8, L2849
+ popToSp 16
+ pushImmf 800
+ popToSp 12
+ pushImmf 0
+ popToSp 8
+ pushImmf 0
+ popToSp 4
+ pushFromFSp 0
+ pushFromFSp 16
+ pushFromFSp 4
+ pushFromFSp 12
+ pushFromFSp 8
+ gosub 8, L2849
  ret 
 L2849:
- pop.sp 4
- pop.sp 8
- pop.sp 12
- pop.sp 16
- pop.sp 0
- push.d.sp 0
- jal 16, L2208
- push 2
+ popToSp 4
+ popToSp 8
+ popToSp 12
+ popToSp 16
+ popToSp 0
+ pushFromFSp 0
+ gosub 16, L2208
+ pushImm 2
  syscall 0, 16 ; trap_random_get (1 in, 1 out)
- push 0
+ pushImm 0
  sub 
- seqz 
- beqz L2882
- push.d.sp 12
+ eqz 
+ jz L2882
+ pushFromFSp 12
  degr 
- pop.sp 52
- b L2888
+ popToSp 52
+ jmp L2888
 L2882:
- push.d.sp 12
- neg.s 
+ pushFromFSp 12
+ negf 
  degr 
- pop.sp 52
+ popToSp 52
 L2888:
- push.d.sp 16
- push.s 0
- sub.s 
- sgtz.s 
- beqz L3066
- push.d.sp 0
+ pushFromFSp 16
+ pushImmf 0
+ subf 
+ supzf 
+ jz L3066
+ pushFromFSp 0
  syscall 2, 23 ; trap_btlobj_target (1 in, 1 out)
  syscall 1, 120 ; trap_target_pos (1 in, 1 out)
- memcpy.sp 16, 64
- push.sp 64
- push.d.sp 0
+ memcpyToSp 16, 64
+ pushFromPSp 64
+ pushFromFSp 0
  syscall 1, 147 ; trap_obj_pos (1 in, 1 out)
- memcpy.sp 16, 80
- push.sp 80
+ memcpyToSp 16, 80
+ pushFromPSp 80
  syscall 0, 5 ; trap_vector_sub (2 in, 1 out)
- memcpy.sp 16, 96
- push.sp 96
- memcpy.sp 16, 32
- push.sp 32
- push 4
+ memcpyToSp 16, 96
+ pushFromPSp 96
+ memcpyToSp 16, 32
+ pushFromPSp 32
+ pushImm 4
  add 
- push.s 0
+ pushImmf 0
  memcpy 0
- push.sp 32
+ pushFromPSp 32
  syscall 0, 7 ; trap_vector_normalize (1 in, 1 out)
- pop.sp 48
- push.d.sp 8
- push.s 0
- sub.s 
- sgtz.s 
+ popToSp 48
+ pushFromFSp 8
+ pushImmf 0
+ subf 
+ supzf 
  dup 
- beqz L2960
- push.d.sp 48
- push.d.sp 8
- sub.s 
- sltz.s 
- land 
+ jz L2960
+ pushFromFSp 48
+ pushFromFSp 8
+ subf 
+ infzf 
+ eqzv 
 L2960:
  dup 
- bnez L2981
- push.d.sp 4
- push.s 0
- sub.s 
- sgtz.s 
+ jnz L2981
+ pushFromFSp 4
+ pushImmf 0
+ subf 
+ supzf 
  dup 
- beqz L2980
- push.d.sp 48
- push.d.sp 4
- sub.s 
- sgtz.s 
- land 
+ jz L2980
+ pushFromFSp 48
+ pushFromFSp 4
+ subf 
+ supzf 
+ eqzv 
 L2980:
- lor 
+ neqzv 
 L2981:
- beqz L2987
- b L3066
+ jz L2987
+ jmp L3066
 L2985:
- b L2987
+ jmp L2987
 L2987:
- push.sp 32
- push.d.sp 52
+ pushFromPSp 32
+ pushFromFSp 52
  syscall 0, 13 ; trap_vector_roty (2 in, 1 out)
- memcpy.sp 16, 64
- push.sp 64
- memcpy.sp 16, 32
- push.d.sp 0
+ memcpyToSp 16, 64
+ pushFromPSp 64
+ memcpyToSp 16, 32
+ pushFromFSp 0
  syscall 1, 147 ; trap_obj_pos (1 in, 1 out)
- memcpy.sp 16, 64
- push.sp 64
- push.sp 32
- push.s 500
+ memcpyToSp 16, 64
+ pushFromPSp 64
+ pushFromPSp 32
+ pushImmf 500
  syscall 0, 36 ; trap_vector_mul (2 in, 1 out)
- memcpy.sp 16, 80
- push.sp 80
+ memcpyToSp 16, 80
+ pushFromPSp 80
  syscall 0, 4 ; trap_vector_add (2 in, 1 out)
- memcpy.sp 16, 96
- push.sp 96
- memcpy.sp 16, 32
- push.d.sp 0
- push.sp 32
- push.sp.d 72
- jal 16, L3067
+ memcpyToSp 16, 96
+ pushFromPSp 96
+ memcpyToSp 16, 32
+ pushFromFSp 0
+ pushFromPSp 32
+ pushFromPSpVal 72
+ gosub 16, L3067
  drop 
- push.sp.d 72
- push.d.pop 28
- push 3
+ pushFromPSpVal 72
+ fetchValue 28
+ pushImm 3
  sub 
- seqz 
- beqz L3056
- b L3066
+ eqz 
+ jz L3056
+ jmp L3066
 L3054:
- b L3056
+ jmp L3056
 L3056:
  halt 
- push.d.sp 16
+ pushFromFSp 16
  syscall 0, 3 ; trap_frametime (0 in, 1 out)
- sub.s 
- pop.sp 16
- b L2888
+ subf 
+ popToSp 16
+ jmp L2888
 L3066:
  ret 
 L3067:
- pop.sp 4
- pop.sp 8
- pop.sp 0
- push.d.sp 8
- push.d.sp 0
+ popToSp 4
+ popToSp 8
+ popToSp 0
+ pushFromFSp 8
+ pushFromFSp 0
  syscall 1, 147 ; trap_obj_pos (1 in, 1 out)
- memcpy.sp 16, 64
- push.sp 64
+ memcpyToSp 16, 64
+ pushFromPSp 64
  syscall 0, 5 ; trap_vector_sub (2 in, 1 out)
- memcpy.sp 16, 80
- push.sp 80
- memcpy.sp 16, 32
- push.sp 32
+ memcpyToSp 16, 80
+ pushFromPSp 80
+ memcpyToSp 16, 32
+ pushFromPSp 32
  syscall 0, 7 ; trap_vector_normalize (1 in, 1 out)
- pop.sp 48
- push.d.sp 0
+ popToSp 48
+ pushFromFSp 0
  syscall 1, 78 ; trap_obj_motion_is_no_control (1 in, 1 out)
- seqz 
- beqz L3315
- push.d.sp 0
- push.sp 32
- push.d.sp 4
- push.d.pop 8
+ eqz 
+ jz L3315
+ pushFromFSp 0
+ pushFromPSp 32
+ pushFromFSp 4
+ fetchValue 8
  syscall 1, 80 ; trap_obj_turn_dir (3 in, 1 out)
  drop 
- push.d.sp 0
+ pushFromFSp 0
  syscall 1, 57 ; trap_obj_is_jump (1 in, 1 out)
- beqz L3143
- push.d.sp 0
- push.d.sp 0
+ jz L3143
+ pushFromFSp 0
+ pushFromFSp 0
  syscall 1, 201 ; trap_obj_dir (1 in, 1 out)
- memcpy.sp 16, 64
- push.sp 64
- push.d.sp 4
- push.d.pop 24
+ memcpyToSp 16, 64
+ pushFromPSp 64
+ pushFromFSp 4
+ fetchValue 24
  syscall 1, 111 ; trap_obj_set_movement (3 in, 0 out)
- b L3313
+ jmp L3313
 L3143:
- push.d.sp 0
- push.d.pop 4
- push.d.sp 4
- push.d.pop 12
- push.d.sp 4
- push.d.pop 16
+ pushFromFSp 0
+ fetchValue 4
+ pushFromFSp 4
+ fetchValue 12
+ pushFromFSp 4
+ fetchValue 16
  syscall 1, 12 ; trap_sysobj_motion_change (3 in, 0 out)
- push.d.sp 0
+ pushFromFSp 0
  syscall 1, 201 ; trap_obj_dir (1 in, 1 out)
- memcpy.sp 16, 64
- push.sp 64
- memcpy.sp 16, 16
- push.sp 16
- push 12
+ memcpyToSp 16, 64
+ pushFromPSp 64
+ memcpyToSp 16, 16
+ pushFromPSp 16
+ pushImm 12
  add 
- push.s 100
+ pushImmf 100
  memcpy 0
- push.d.sp 4
- push 28
+ pushFromFSp 4
+ pushImm 28
  add 
- push.d.sp 0
- push.sp 16
- push.d.sp 4
- push.d.pop 0
- push.d.sp 4
- push.d.pop 4
+ pushFromFSp 0
+ pushFromPSp 16
+ pushFromFSp 4
+ fetchValue 0
+ pushFromFSp 4
+ fetchValue 4
  syscall 1, 119 ; trap_obj_check_step (4 in, 1 out)
  memcpy 0
- push.d.sp 4
- push.d.pop 28
+ pushFromFSp 4
+ fetchValue 28
  dup 
- push 1
+ pushImm 1
  sub 
- beqz L3220
+ jz L3220
  dup 
- push 2
+ pushImm 2
  sub 
- beqz L3220
- b L3299
+ jz L3220
+ jmp L3299
 L3220:
- push.d.sp 4
- push.d.pop 20
- push 0
+ pushFromFSp 4
+ fetchValue 20
+ pushImm 0
  sub 
- sltz 
- beqz L3235
- b L3312
+ msb 
+ jz L3235
+ jmp L3312
 L3233:
- b L3235
+ jmp L3235
 L3235:
- push.sp 16
- push 4
+ pushFromPSp 16
+ pushImm 4
  add 
- push.d.sp 4
- push.d.pop 0
+ pushFromFSp 4
+ fetchValue 0
  memcpy 0
- push.sp 16
- push 12
+ pushFromPSp 16
+ pushImm 12
  add 
- push.d.sp 4
- push.d.pop 24
+ pushFromFSp 4
+ fetchValue 24
  memcpy 0
- push.d.sp 4
- push.d.pop 32
- beqz L3281
- push.d.sp 0
- push.sp 16
- push.d.sp 4
- push.d.pop 20
- push.s 0
- push 1
+ pushFromFSp 4
+ fetchValue 32
+ jz L3281
+ pushFromFSp 0
+ pushFromPSp 16
+ pushFromFSp 4
+ fetchValue 20
+ pushImmf 0
+ pushImm 1
  syscall 1, 168 ; trap_obj_flyjump (5 in, 0 out)
- b L3297
+ jmp L3297
 L3281:
- push.d.sp 0
- push.sp 16
- push.d.sp 4
- push.d.pop 20
- push.s 0
- push 1
+ pushFromFSp 0
+ pushFromPSp 16
+ pushFromFSp 4
+ fetchValue 20
+ pushImmf 0
+ pushImm 1
  syscall 1, 55 ; method_obj_jump (5 in, 0 out)
 L3297:
- b L3312
+ jmp L3312
 L3299:
  dup 
- push 3
+ pushImm 3
  sub 
- beqz L3308
- b L3312
+ jz L3308
+ jmp L3312
 L3308:
- b L3312
+ jmp L3312
 L3310:
- b L3312
+ jmp L3312
 L3312:
  drop 
 L3313:
- b L3315
+ jmp L3315
 L3315:
- push.d.sp 48
+ pushFromFSp 48
  ret 
-L3318: ;___label for action push.bd L5356 ; ___ai high_jump
- pop.sp 0
- push.d.sp 0
- jal 12, L3440
- memcpy.sp 16, 32
- push.sp 32
- memcpy.sp 16, 16
- push.d.sp 0
- push.sp 16
+L3318: ;___label for action pushFromPAi L5356 ; ___ai high_jump
+ popToSp 0
+ pushFromFSp 0
+ gosub 12, L3440
+ memcpyToSp 16, 32
+ pushFromPSp 32
+ memcpyToSp 16, 16
+ pushFromFSp 0
+ pushFromPSp 16
  syscall 1, 4 ; trap_obj_wish_dir (2 in, 0 out)
- push.sp 16
- push 4
+ pushFromPSp 16
+ pushImm 4
  add 
- push.s 500
+ pushImmf 500
  memcpy 0
- push.sp 16
- push 12
+ pushFromPSp 16
+ pushImm 12
  add 
- push.s 1
+ pushImmf 1
  memcpy 0
- push.d.sp 0
- push.sp 16
- push 3
- push.s 0
- push 1
+ pushFromFSp 0
+ pushFromPSp 16
+ pushImm 3
+ pushImmf 0
+ pushImm 1
  syscall 1, 55 ; method_obj_jump (5 in, 0 out)
 L3373:
- push.d.sp 0
+ pushFromFSp 0
  syscall 1, 57 ; trap_obj_is_jump (1 in, 1 out)
- seqz 
- beqz L3383
+ eqz 
+ jz L3383
  halt 
- b L3373
+ jmp L3373
 L3383:
- push.d.sp 0
- jal 12, L3432
- seqz 
- beqz L3431
- push.d.sp 0
- jal 12, L2802
- push.s 300
- push.d.sp 0
- jal 12, L97
- sub.s 
- sltz.s 
- beqz L3428
- push.d.sp 0
- jal 12, L3440
- memcpy.sp 16, 32
- push.sp 32
- memcpy.sp 16, 16
- push.d.sp 0
- push.sp 16
- push.s 20
+ pushFromFSp 0
+ gosub 12, L3432
+ eqz 
+ jz L3431
+ pushFromFSp 0
+ gosub 12, L2802
+ pushImmf 300
+ pushFromFSp 0
+ gosub 12, L97
+ subf 
+ infzf 
+ jz L3428
+ pushFromFSp 0
+ gosub 12, L3440
+ memcpyToSp 16, 32
+ pushFromPSp 32
+ memcpyToSp 16, 16
+ pushFromFSp 0
+ pushFromPSp 16
+ pushImmf 20
  syscall 1, 111 ; trap_obj_set_movement (3 in, 0 out)
- b L3428
+ jmp L3428
 L3428:
  halt 
- b L3383
+ jmp L3383
 L3431:
  ret 
 L3432:
- pop.sp 0
- push.d.sp 0
+ popToSp 0
+ pushFromFSp 0
  syscall 1, 60 ; trap_obj_is_air (1 in, 1 out)
- seqz 
+ eqz 
  ret 
 L3440:
- pop.sp 0
- push.d.sp 0
- jal 12, L3467
- memcpy.sp 16, 32
- push.sp 32
- memcpy.sp 16, 16
- push.sp 16
- push 4
+ popToSp 0
+ pushFromFSp 0
+ gosub 12, L3467
+ memcpyToSp 16, 32
+ pushFromPSp 32
+ memcpyToSp 16, 16
+ pushFromPSp 16
+ pushImm 4
  add 
- push.s 0
+ pushImmf 0
  memcpy 0
- push.sp 16
+ pushFromPSp 16
  ret 
 L3467:
- pop.sp 0
- push.d.sp 0
+ popToSp 0
+ pushFromFSp 0
  syscall 2, 23 ; trap_btlobj_target (1 in, 1 out)
  syscall 1, 120 ; trap_target_pos (1 in, 1 out)
- memcpy.sp 16, 32
- push.sp 32
- push.d.sp 0
+ memcpyToSp 16, 32
+ pushFromPSp 32
+ pushFromFSp 0
  syscall 1, 147 ; trap_obj_pos (1 in, 1 out)
- memcpy.sp 16, 48
- push.sp 48
+ memcpyToSp 16, 48
+ pushFromPSp 48
  syscall 0, 5 ; trap_vector_sub (2 in, 1 out)
- memcpy.sp 16, 64
- push.sp 64
- memcpy.sp 16, 16
- push.sp 16
+ memcpyToSp 16, 64
+ pushFromPSp 64
+ memcpyToSp 16, 16
+ pushFromPSp 16
  ret 
-L3502: ;___label for action push.bd L5428 ; ___ai normal_jump_forward
- pop.sp 0
- push.s 0
- pop.sp 4
- push.d.sp 0
- push.d.sp 4
- jal 4, L3516
+L3502: ;___label for action pushFromPAi L5428 ; ___ai normal_jump_forward
+ popToSp 0
+ pushImmf 0
+ popToSp 4
+ pushFromFSp 0
+ pushFromFSp 4
+ gosub 4, L3516
  ret 
 L3516:
- pop.sp 4
- pop.sp 0
- push.d.sp.d 108
- push 1
+ popToSp 4
+ popToSp 0
+ pushFromFSpVal 108
+ pushImm 1
  add 
- pop.sp.d 108
- push.d.sp 0
- jal 12, L3440
- memcpy.sp 16, 32
- push.sp 32
- memcpy.sp 16, 16
- push.sp 16
- push 4
+ popToSpVal 108
+ pushFromFSp 0
+ gosub 12, L3440
+ memcpyToSp 16, 32
+ pushFromPSp 32
+ memcpyToSp 16, 16
+ pushFromPSp 16
+ pushImm 4
  add 
- push.s 100
+ pushImmf 100
  memcpy 0
- push.sp 16
- push 12
+ pushFromPSp 16
+ pushImm 12
  add 
- push.s 20
+ pushImmf 20
  memcpy 0
- push.sp 16
- push.d.sp 4
+ pushFromPSp 16
+ pushFromFSp 4
  degr 
  syscall 0, 13 ; trap_vector_roty (2 in, 1 out)
- memcpy.sp 16, 32
- push.sp 32
- memcpy.sp 16, 16
- push.d.sp 0
- push.sp 16
+ memcpyToSp 16, 32
+ pushFromPSp 32
+ memcpyToSp 16, 16
+ pushFromFSp 0
+ pushFromPSp 16
  syscall 1, 4 ; trap_obj_wish_dir (2 in, 0 out)
- push.d.sp 0
- push.sp 16
- push 3
- push.s 0
- push 1
+ pushFromFSp 0
+ pushFromPSp 16
+ pushImm 3
+ pushImmf 0
+ pushImm 1
  syscall 1, 55 ; method_obj_jump (5 in, 0 out)
 L3596:
- push.d.sp 0
+ pushFromFSp 0
  syscall 1, 57 ; trap_obj_is_jump (1 in, 1 out)
- seqz 
- beqz L3606
+ eqz 
+ jz L3606
  halt 
- b L3596
+ jmp L3596
 L3606:
- push.d.sp 0
- jal 12, L3432
- seqz 
- beqz L3616
+ pushFromFSp 0
+ gosub 12, L3432
+ eqz 
+ jz L3616
  halt 
- b L3606
+ jmp L3606
 L3616:
- push.d.sp 0
- push.d.pop 4
+ pushFromFSp 0
+ fetchValue 4
  syscall 1, 14 ; trap_sysobj_motion_is_end (1 in, 1 out)
- seqz 
- beqz L3628
+ eqz 
+ jz L3628
  halt 
- b L3616
+ jmp L3616
 L3628:
  ret 
-L3629: ;___label for action push.bd L5466 ; ___ai normal_jump_slant_near
- pop.sp 0
- push.d.sp 0
- jal 4, L3661
- push.s 0.5
- sub.s 
- sltz.s 
- beqz L3649
- push.s 60
- pop.sp 4
- b L3654
+L3629: ;___label for action pushFromPAi L5466 ; ___ai normal_jump_slant_near
+ popToSp 0
+ pushFromFSp 0
+ gosub 4, L3661
+ pushImmf 0.5
+ subf 
+ infzf 
+ jz L3649
+ pushImmf 60
+ popToSp 4
+ jmp L3654
 L3649:
- push.s -60
- pop.sp 4
+ pushImmf -60
+ popToSp 4
 L3654:
- push.d.sp 0
- push.d.sp 4
- jal 4, L3516
+ pushFromFSp 0
+ pushFromFSp 4
+ gosub 4, L3516
  ret 
 L3661:
- pop.sp 0
- push.s 1
+ popToSp 0
+ pushImmf 1
  syscall 0, 17 ; trap_random_getf (1 in, 1 out)
- pop.sp 4
- push.d.sp 4
+ popToSp 4
+ pushFromFSp 4
  ret 
-L3673: ;___label for action push.bd L5451 ; ___ai normal_jump_side
- pop.sp 0
- push.d.sp 0
- jal 4, L3661
- push.s 0.5
- sub.s 
- sltz.s 
- beqz L3693
- push.s 90
- pop.sp 4
- b L3698
+L3673: ;___label for action pushFromPAi L5451 ; ___ai normal_jump_side
+ popToSp 0
+ pushFromFSp 0
+ gosub 4, L3661
+ pushImmf 0.5
+ subf 
+ infzf 
+ jz L3693
+ pushImmf 90
+ popToSp 4
+ jmp L3698
 L3693:
- push.s -90
- pop.sp 4
+ pushImmf -90
+ popToSp 4
 L3698:
- push.d.sp 0
- push.d.sp 4
- jal 4, L3516
+ pushFromFSp 0
+ pushFromFSp 4
+ gosub 4, L3516
  ret 
-L3705: ;___label for action push.bd L5406 ; ___ai normal_jump_slant_far
- pop.sp 0
- push.d.sp 0
- jal 4, L3661
- push.s 0.5
- sub.s 
- sltz.s 
- beqz L3725
- push.s 150
- pop.sp 4
- b L3730
+L3705: ;___label for action pushFromPAi L5406 ; ___ai normal_jump_slant_far
+ popToSp 0
+ pushFromFSp 0
+ gosub 4, L3661
+ pushImmf 0.5
+ subf 
+ infzf 
+ jz L3725
+ pushImmf 150
+ popToSp 4
+ jmp L3730
 L3725:
- push.s -150
- pop.sp 4
+ pushImmf -150
+ popToSp 4
 L3730:
- push.d.sp 0
- push.d.sp 4
- jal 4, L3516
+ pushFromFSp 0
+ pushFromFSp 4
+ gosub 4, L3516
  ret 
-L3737: ;___label for action push.bd L5392 ; ___ai normal_jump_backward
- pop.sp 0
- push.s 180
- pop.sp 4
- push.d.sp 0
- push.d.sp 4
- jal 4, L3516
+L3737: ;___label for action pushFromPAi L5392 ; ___ai normal_jump_backward
+ popToSp 0
+ pushImmf 180
+ popToSp 4
+ pushFromFSp 0
+ pushFromFSp 4
+ gosub 4, L3516
  ret 
-L3751: ;___label for action push.bd L5315 ; ___ai high_jump_back
- pop.sp 0
- push.d.sp.d 112
- push 1
+L3751: ;___label for action pushFromPAi L5315 ; ___ai high_jump_back
+ popToSp 0
+ pushFromFSpVal 112
+ pushImm 1
  add 
- pop.sp.d 112
- push.s 0
- push.s 360
+ popToSpVal 112
+ pushImmf 0
+ pushImmf 360
  syscall 0, 18 ; trap_random_range (2 in, 1 out)
- pop.sp 32
- push.d.sp 0
- jal 12, L3850
- memcpy.sp 16, 48
- push.sp 48
- memcpy.sp 16, 16
- push.sp 16
- push 4
+ popToSp 32
+ pushFromFSp 0
+ gosub 12, L3850
+ memcpyToSp 16, 48
+ pushFromPSp 48
+ memcpyToSp 16, 16
+ pushFromPSp 16
+ pushImm 4
  add 
- push.s 100
+ pushImmf 100
  memcpy 0
- push.sp 16
- push 12
+ pushFromPSp 16
+ pushImm 12
  add 
- push.s 40
+ pushImmf 40
  memcpy 0
- push.sp 16
- push.d.sp 32
+ pushFromPSp 16
+ pushFromFSp 32
  degr 
  syscall 0, 13 ; trap_vector_roty (2 in, 1 out)
- memcpy.sp 16, 48
- push.sp 48
- memcpy.sp 16, 16
- push.d.sp 0
- push.sp 16
+ memcpyToSp 16, 48
+ pushFromPSp 48
+ memcpyToSp 16, 16
+ pushFromFSp 0
+ pushFromPSp 16
  syscall 1, 4 ; trap_obj_wish_dir (2 in, 0 out)
- push.d.sp 0
- push.sp 16
- push 3
- push.s 0
- push 1
+ pushFromFSp 0
+ pushFromPSp 16
+ pushImm 3
+ pushImmf 0
+ pushImm 1
  syscall 1, 55 ; method_obj_jump (5 in, 0 out)
 L3839:
- push.d.sp 0
+ pushFromFSp 0
  syscall 1, 57 ; trap_obj_is_jump (1 in, 1 out)
- seqz 
- beqz L3849
+ eqz 
+ jz L3849
  halt 
- b L3839
+ jmp L3839
 L3849:
  ret 
 L3850:
- pop.sp 0
- push.d.sp 0
- jal 12, L3877
- memcpy.sp 16, 32
- push.sp 32
- memcpy.sp 16, 16
- push.sp 16
- push 4
+ popToSp 0
+ pushFromFSp 0
+ gosub 12, L3877
+ memcpyToSp 16, 32
+ pushFromPSp 32
+ memcpyToSp 16, 16
+ pushFromPSp 16
+ pushImm 4
  add 
- push.s 0
+ pushImmf 0
  memcpy 0
- push.sp 16
+ pushFromPSp 16
  ret 
 L3877:
- pop.sp 0
- push.d.sp 0
+ popToSp 0
+ pushFromFSp 0
  syscall 1, 147 ; trap_obj_pos (1 in, 1 out)
- memcpy.sp 16, 32
- push.sp 32
- push.d.sp 0
+ memcpyToSp 16, 32
+ pushFromPSp 32
+ pushFromFSp 0
  syscall 2, 23 ; trap_btlobj_target (1 in, 1 out)
  syscall 1, 120 ; trap_target_pos (1 in, 1 out)
- memcpy.sp 16, 48
- push.sp 48
+ memcpyToSp 16, 48
+ pushFromPSp 48
  syscall 0, 5 ; trap_vector_sub (2 in, 1 out)
- memcpy.sp 16, 64
- push.sp 64
- memcpy.sp 16, 16
- push.sp 16
+ memcpyToSp 16, 64
+ pushFromPSp 64
+ memcpyToSp 16, 16
+ pushFromPSp 16
  ret 
-L3912: ;___label for action push.bd L5361 ; ___ai atk_kick
- pop.sp 0
- push.d.sp.d 112
- push 1
+L3912: ;___label for action pushFromPAi L5361 ; ___ai atk_kick
+ popToSp 0
+ pushFromFSpVal 112
+ pushImm 1
  add 
- pop.sp.d 112
- push.d.sp 0
- push.d.pop 4
- push 201
- push.s 8
+ popToSpVal 112
+ pushFromFSp 0
+ fetchValue 4
+ pushImm 201
+ pushImmf 8
  syscall 1, 12 ; trap_sysobj_motion_change (3 in, 0 out)
 L3934:
- push.d.sp 0
- push.d.pop 4
+ pushFromFSp 0
+ fetchValue 4
  syscall 1, 14 ; trap_sysobj_motion_is_end (1 in, 1 out)
- seqz 
- beqz L3946
+ eqz 
+ jz L3946
  halt 
- b L3934
+ jmp L3934
 L3946:
  ret 
-L3947: ;___label for action push.bd L5544 ; ___ai atk_pumpkin
- pop.sp 0
- push.d.sp.d 112
- push 1
+L3947: ;___label for action pushFromPAi L5544 ; ___ai atk_pumpkin
+ popToSp 0
+ pushFromFSpVal 112
+ pushImm 1
  add 
- pop.sp.d 112
- push.d.sp 0
- jal 4, L97
- push.s 600
- sub.s 
- sltz.s 
- beqz L3994
- push.d.sp 0
- push.d.pop 4
- push 202
- push.s 8
+ popToSpVal 112
+ pushFromFSp 0
+ gosub 4, L97
+ pushImmf 600
+ subf 
+ infzf 
+ jz L3994
+ pushFromFSp 0
+ fetchValue 4
+ pushImm 202
+ pushImmf 8
  syscall 1, 12 ; trap_sysobj_motion_change (3 in, 0 out)
 L3980:
- push.d.sp 0
- push.d.pop 4
+ pushFromFSp 0
+ fetchValue 4
  syscall 1, 14 ; trap_sysobj_motion_is_end (1 in, 1 out)
- seqz 
- beqz L3992
+ eqz 
+ jz L3992
  halt 
- b L3980
+ jmp L3980
 L3992:
- b L3994
+ jmp L3994
 L3994:
  ret 
-L3995: ;___label for action push.bd L5307 ; ___ai atk_change_box
- pop.sp 0
- push.d.sp 0
- push 1
+L3995: ;___label for action pushFromPAi L5307 ; ___ai atk_change_box
+ popToSp 0
+ pushFromFSp 0
+ pushImm 1
  syscall 1, 211 ; trap_obj_pattern_enable (2 in, 0 out)
- push.d.sp 0
- push.d.pop 4
- push 205
- push.s 8
+ pushFromFSp 0
+ fetchValue 4
+ pushImm 205
+ pushImmf 8
  syscall 1, 12 ; trap_sysobj_motion_change (3 in, 0 out)
 L4016:
- push.d.sp 0
- push.d.pop 4
+ pushFromFSp 0
+ fetchValue 4
  syscall 1, 14 ; trap_sysobj_motion_is_end (1 in, 1 out)
- seqz 
- beqz L4028
+ eqz 
+ jz L4028
  halt 
- b L4016
+ jmp L4016
 L4028:
  ret 
-L4029: ;___label for action push.bd L5524 ; ___ai atk_soldier_box_idle
- pop.sp 0
- push.s 400
- push.s 600
+L4029: ;___label for action pushFromPAi L5524 ; ___ai atk_soldier_box_idle
+ popToSp 0
+ pushImmf 400
+ pushImmf 600
  syscall 0, 18 ; trap_random_range (2 in, 1 out)
- pop.sp 4
+ popToSp 4
 L4041:
- push.s 0
- push.d.sp 4
- sub.s 
- sltz.s 
- beqz L4115
- push.d.sp 0
- jal 4, L97
- push.s 600
- sub.s 
- sltz.s 
- beqz L4065
- b L4115
+ pushImmf 0
+ pushFromFSp 4
+ subf 
+ infzf 
+ jz L4115
+ pushFromFSp 0
+ gosub 4, L97
+ pushImmf 600
+ subf 
+ infzf 
+ jz L4065
+ jmp L4115
 L4063:
- b L4065
+ jmp L4065
 L4065:
- push.s 1200
- push.d.sp 0
- jal 4, L97
- sub.s 
- sltz.s 
- beqz L4080
- b L4115
+ pushImmf 1200
+ pushFromFSp 0
+ gosub 4, L97
+ subf 
+ infzf 
+ jz L4080
+ jmp L4115
 L4078:
- b L4080
+ jmp L4080
 L4080:
- push 3
- push.d.sp.d 112
+ pushImm 3
+ pushFromFSpVal 112
  sub 
- slez 
- beqz L4093
- b L4115
+ info 
+ jz L4093
+ jmp L4115
 L4091:
- b L4093
+ jmp L4093
 L4093:
- push.d.sp 0
- push.d.pop 4
- push 206
- push.s 8
+ pushFromFSp 0
+ fetchValue 4
+ pushImm 206
+ pushImmf 8
  syscall 1, 12 ; trap_sysobj_motion_change (3 in, 0 out)
- push.d.sp 4
+ pushFromFSp 4
  syscall 0, 3 ; trap_frametime (0 in, 1 out)
- sub.s 
- pop.sp 4
+ subf 
+ popToSp 4
  halt 
- b L4041
+ jmp L4041
 L4115:
  ret 
-L4116: ;___label for action push.bd L5514 ; ___ai atk_soldier_box_gun
- pop.sp 0
- push 2
- pop.sp.d 116
- push.d.sp.d 112
- push 1
+L4116: ;___label for action pushFromPAi L5514 ; ___ai atk_soldier_box_gun
+ popToSp 0
+ pushImm 2
+ popToSpVal 116
+ pushFromFSpVal 112
+ pushImm 1
  add 
- pop.sp.d 112
- push 0
- pop.sp.d 120
- push.d.sp 0
- jal 4, L2802
- push.d.sp 0
- push.d.pop 4
- push 207
- push.s 8
+ popToSpVal 112
+ pushImm 0
+ popToSpVal 120
+ pushFromFSp 0
+ gosub 4, L2802
+ pushFromFSp 0
+ fetchValue 4
+ pushImm 207
+ pushImmf 8
  syscall 1, 12 ; trap_sysobj_motion_change (3 in, 0 out)
 L4152:
- push.d.sp 0
- push.d.pop 4
+ pushFromFSp 0
+ fetchValue 4
  syscall 1, 14 ; trap_sysobj_motion_is_end (1 in, 1 out)
- seqz 
- beqz L4164
+ eqz 
+ jz L4164
  halt 
- b L4152
+ jmp L4152
 L4164:
- push.d.sp 0
- push.d.pop 4
- push 208
- push.s 8
+ pushFromFSp 0
+ fetchValue 4
+ pushImm 208
+ pushImmf 8
  syscall 1, 12 ; trap_sysobj_motion_change (3 in, 0 out)
  ret 
-L4177: ;___label for action push.bd L5331 ; ___ai atk_soldier_box_end
- pop.sp 0
- push.d.sp 0
- push.d.pop 4
- push 211
- push.s 8
+L4177: ;___label for action pushFromPAi L5331 ; ___ai atk_soldier_box_end
+ popToSp 0
+ pushFromFSp 0
+ fetchValue 4
+ pushImm 211
+ pushImmf 8
  syscall 1, 12 ; trap_sysobj_motion_change (3 in, 0 out)
 L4191:
- push.d.sp 0
- push.d.pop 4
+ pushFromFSp 0
+ fetchValue 4
  syscall 1, 14 ; trap_sysobj_motion_is_end (1 in, 1 out)
- seqz 
- beqz L4203
+ eqz 
+ jz L4203
  halt 
- b L4191
+ jmp L4191
 L4203:
- push.d.sp 0
- push 1
+ pushFromFSp 0
+ pushImm 1
  syscall 1, 212 ; trap_obj_pattern_disable (2 in, 0 out)
  ret 
-L4211: ;___label for action push.bd L5497 ; ___ai atk_soldier_idle
- pop.sp 0
- push 1
- pop.sp.d 120
- push.s 40
- push.s 60
+L4211: ;___label for action pushFromPAi L5497 ; ___ai atk_soldier_idle
+ popToSp 0
+ pushImm 1
+ popToSpVal 120
+ pushImmf 40
+ pushImmf 60
  syscall 0, 18 ; trap_random_range (2 in, 1 out)
- pop.sp 4
+ popToSp 4
 L4228:
- push.s 0
- push.d.sp 4
- sub.s 
- sltz.s 
- beqz L4302
- push.d.sp 0
- jal 4, L97
- push.s 600
- sub.s 
- sltz.s 
- beqz L4252
- b L4302
+ pushImmf 0
+ pushFromFSp 4
+ subf 
+ infzf 
+ jz L4302
+ pushFromFSp 0
+ gosub 4, L97
+ pushImmf 600
+ subf 
+ infzf 
+ jz L4252
+ jmp L4302
 L4250:
- b L4252
+ jmp L4252
 L4252:
- push.s 1200
- push.d.sp 0
- jal 4, L97
- sub.s 
- sltz.s 
- beqz L4267
- b L4302
+ pushImmf 1200
+ pushFromFSp 0
+ gosub 4, L97
+ subf 
+ infzf 
+ jz L4267
+ jmp L4302
 L4265:
- b L4267
+ jmp L4267
 L4267:
- push 3
- push.d.sp.d 112
+ pushImm 3
+ pushFromFSpVal 112
  sub 
- slez 
- beqz L4280
- b L4302
+ info 
+ jz L4280
+ jmp L4302
 L4278:
- b L4280
+ jmp L4280
 L4280:
- push.d.sp 0
- push.d.pop 4
- push 208
- push.s 8
+ pushFromFSp 0
+ fetchValue 4
+ pushImm 208
+ pushImmf 8
  syscall 1, 12 ; trap_sysobj_motion_change (3 in, 0 out)
- push.d.sp 4
+ pushFromFSp 4
  syscall 0, 3 ; trap_frametime (0 in, 1 out)
- sub.s 
- pop.sp 4
+ subf 
+ popToSp 4
  halt 
- b L4228
+ jmp L4228
 L4302:
  ret 
-L4303: ;___label for action push.bd L5484 ; ___ai atk_soldier_gun
- pop.sp 0
- push.d.sp.d 112
- push 1
+L4303: ;___label for action pushFromPAi L5484 ; ___ai atk_soldier_gun
+ popToSp 0
+ pushFromFSpVal 112
+ pushImm 1
  add 
- pop.sp.d 112
- push 0
- pop.sp.d 120
- push.d.sp 0
- jal 4, L2802
- push.d.sp 0
- push.d.pop 4
- push L209
- push.s 8
+ popToSpVal 112
+ pushImm 0
+ popToSpVal 120
+ pushFromFSp 0
+ gosub 4, L2802
+ pushFromFSp 0
+ fetchValue 4
+ pushImm L209
+ pushImmf 8
  syscall 1, 12 ; trap_sysobj_motion_change (3 in, 0 out)
 L4334:
- push.d.sp 0
- push.d.pop 4
+ pushFromFSp 0
+ fetchValue 4
  syscall 1, 14 ; trap_sysobj_motion_is_end (1 in, 1 out)
- seqz 
- beqz L4346
+ eqz 
+ jz L4346
  halt 
- b L4334
+ jmp L4334
 L4346:
- push.d.sp 0
- push.d.pop 4
- push 208
- push.s 8
+ pushFromFSp 0
+ fetchValue 4
+ pushImm 208
+ pushImmf 8
  syscall 1, 12 ; trap_sysobj_motion_change (3 in, 0 out)
  ret 
-L4359: ;___label for action push.bd L5323 ; ___ai atk_soldier_end
- pop.sp 0
- push.d.sp 0
- push.d.pop 4
- push 210
- push.s 8
+L4359: ;___label for action pushFromPAi L5323 ; ___ai atk_soldier_end
+ popToSp 0
+ pushFromFSp 0
+ fetchValue 4
+ pushImm 210
+ pushImmf 8
  syscall 1, 12 ; trap_sysobj_motion_change (3 in, 0 out)
 L4373:
- push.d.sp 0
- push.d.pop 4
+ pushFromFSp 0
+ fetchValue 4
  syscall 1, 14 ; trap_sysobj_motion_is_end (1 in, 1 out)
- seqz 
- beqz L4385
+ eqz 
+ jz L4385
  halt 
- b L4373
+ jmp L4373
 L4385:
- push.d.sp 0
- push 1
+ pushFromFSp 0
+ pushImm 1
  syscall 1, 212 ; trap_obj_pattern_disable (2 in, 0 out)
  ret 
-L4393: ;___label for action push.bd L5294 ; ___ai change_box
- pop.sp 0
- push.d.sp 0
- jal 4, L4400
+L4393: ;___label for action pushFromPAi L5294 ; ___ai change_box
+ popToSp 0
+ pushFromFSp 0
+ gosub 4, L4400
  ret 
 L4400:
- pop.sp 0
- push.s 1200
- push.d.sp 0
- jal 4, L97
- sub.s 
- sltz.s 
- beqz L4427
- push.d.sp 0
- push.bd L5300 ; ___ai move_forward (L5300)
+ popToSp 0
+ pushImmf 1200
+ pushFromFSp 0
+ gosub 4, L97
+ subf 
+ infzf 
+ jz L4427
+ pushFromFSp 0
+ pushFromPAi L5300 ; ___ai move_forward (L5300)
  syscall 1, 8 ; trap_obj_act_start (2 in, 0 out)
- push.d.sp 0
- push.bd L5307 ; ___ai atk_change_box (L5307)
+ pushFromFSp 0
+ pushFromPAi L5307 ; ___ai atk_change_box (L5307)
  syscall 1, 9 ; trap_obj_act_push (2 in, 0 out)
- b L4458
+ jmp L4458
 L4427:
- push.d.sp 0
- jal 4, L97
- push.s 600
- sub.s 
- sltz.s 
- beqz L4452
- push.d.sp 0
- push.bd L5315 ; ___ai high_jump_back (L5315)
+ pushFromFSp 0
+ gosub 4, L97
+ pushImmf 600
+ subf 
+ infzf 
+ jz L4452
+ pushFromFSp 0
+ pushFromPAi L5315 ; ___ai high_jump_back (L5315)
  syscall 1, 8 ; trap_obj_act_start (2 in, 0 out)
- push.d.sp 0
- push.bd L5307 ; ___ai atk_change_box (L5307)
+ pushFromFSp 0
+ pushFromPAi L5307 ; ___ai atk_change_box (L5307)
  syscall 1, 9 ; trap_obj_act_push (2 in, 0 out)
- b L4458
+ jmp L4458
 L4452:
- push.d.sp 0
- push.bd L5307 ; ___ai atk_change_box (L5307)
+ pushFromFSp 0
+ pushFromPAi L5307 ; ___ai atk_change_box (L5307)
  syscall 1, 8 ; trap_obj_act_start (2 in, 0 out)
 L4458:
- push 0
- pop.sp.d 112
- push 1
- pop.sp.d 116
+ pushImm 0
+ popToSpVal 112
+ pushImm 1
+ popToSpVal 116
  ret 
-L4469: ;___label for action push.bd L5346 ; ___ai check_soldier_mode
- pop.sp 0
- push.d.sp 0
- jal 4, L4537
- push.s 0.5
- sub.s 
- sltz.s 
- beqz L4499
- push 0
- push.d.sp.d 116
+L4469: ;___label for action pushFromPAi L5346 ; ___ai check_soldier_mode
+ popToSp 0
+ pushFromFSp 0
+ gosub 4, L4537
+ pushImmf 0.5
+ subf 
+ infzf 
+ jz L4499
+ pushImm 0
+ pushFromFSpVal 116
  sub 
- seqz 
- beqz L4497
- push.d.sp 0
- jal 4, L4400
- b L4497
+ eqz 
+ jz L4497
+ pushFromFSp 0
+ gosub 4, L4400
+ jmp L4497
 L4497:
- b L4499
+ jmp L4499
 L4499:
- push 2
- push.d.sp.d 116
+ pushImm 2
+ pushFromFSpVal 116
  sub 
- seqz 
+ eqz 
  dup 
- bnez L4517
- push 1
- push.d.sp.d 116
+ jnz L4517
+ pushImm 1
+ pushFromFSpVal 116
  sub 
- seqz 
- lor 
+ eqz 
+ neqzv 
 L4517:
- beqz L4536
- push 3
- push.d.sp.d 112
+ jz L4536
+ pushImm 3
+ pushFromFSpVal 112
  sub 
- slez 
- beqz L4534
- push.d.sp 0
- jal 4, L4549
- b L4534
+ info 
+ jz L4534
+ pushFromFSp 0
+ gosub 4, L4549
+ jmp L4534
 L4534:
- b L4536
+ jmp L4536
 L4536:
  ret 
 L4537:
- pop.sp 0
- push.d.sp 0
+ popToSp 0
+ pushFromFSp 0
  syscall 1, 84 ; trap_obj_sheet (1 in, 1 out)
- push 0
+ pushImm 0
  syscall 1, 230 ; trap_sheet_hp_rate (2 in, 1 out)
  ret 
 L4549:
- pop.sp 0
- push 2
- push.d.sp.d 116
+ popToSp 0
+ pushImm 2
+ pushFromFSpVal 116
  sub 
- seqz 
- beqz L4568
- push.d.sp 0
- push.bd L5323 ; ___ai atk_soldier_end (L5323)
+ eqz 
+ jz L4568
+ pushFromFSp 0
+ pushFromPAi L5323 ; ___ai atk_soldier_end (L5323)
  syscall 1, 8 ; trap_obj_act_start (2 in, 0 out)
- b L4574
+ jmp L4574
 L4568:
- push.d.sp 0
- push.bd L5331 ; ___ai atk_soldier_box_end (L5331)
+ pushFromFSp 0
+ pushFromPAi L5331 ; ___ai atk_soldier_box_end (L5331)
  syscall 1, 8 ; trap_obj_act_start (2 in, 0 out)
 L4574:
- push 0
- pop.sp.d 112
- push 0
- pop.sp.d 116
+ pushImm 0
+ popToSpVal 112
+ pushImm 0
+ popToSpVal 116
  ret 
-L4585: ;___label for action push.bd L5460 ; ___ai mode_battle
- pop.sp 0
- push.d.sp 0
- jal 4, L4918
- push.d.sp 0
- push 0
- jal 4, L2491
- push.d.sp 0
- push.bd L5346 ; ___ai check_soldier_mode (L5346)
+L4585: ;___label for action pushFromPAi L5460 ; ___ai mode_battle
+ popToSp 0
+ pushFromFSp 0
+ gosub 4, L4918
+ pushFromFSp 0
+ pushImm 0
+ gosub 4, L2491
+ pushFromFSp 0
+ pushFromPAi L5346 ; ___ai check_soldier_mode (L5346)
  syscall 1, 8 ; trap_obj_act_start (2 in, 0 out)
- push 0
- push.d.sp.d 116
+ pushImm 0
+ pushFromFSpVal 116
  sub 
- seqz 
- beqz L4801
- push.d.sp 0
- jal 4, L4537
- push.s 0.5
- sub.s 
- sltz.s 
- beqz L4626
- b L4799
+ eqz 
+ jz L4801
+ pushFromFSp 0
+ gosub 4, L4537
+ pushImmf 0.5
+ subf 
+ infzf 
+ jz L4626
+ jmp L4799
 L4626:
- push 3
- push.d.sp.d 108
+ pushImm 3
+ pushFromFSpVal 108
  sub 
- slez 
+ info 
  dup 
- bnez L4646
- push.s 1200
- push.d.sp 0
- jal 4, L97
- sub.s 
- sltz.s 
- lor 
+ jnz L4646
+ pushImmf 1200
+ pushFromFSp 0
+ gosub 4, L97
+ subf 
+ infzf 
+ neqzv 
 L4646:
- beqz L4679
- push 0
- pop.sp.d 108
- push.d.sp 0
- push.bd L5356 ; ___ai high_jump (L5356)
+ jz L4679
+ pushImm 0
+ popToSpVal 108
+ pushFromFSp 0
+ pushFromPAi L5356 ; ___ai high_jump (L5356)
  syscall 1, 9 ; trap_obj_act_push (2 in, 0 out)
- push.d.sp 0
- push.bd L5361 ; ___ai atk_kick (L5361)
+ pushFromFSp 0
+ pushFromPAi L5361 ; ___ai atk_kick (L5361)
  syscall 1, 9 ; trap_obj_act_push (2 in, 0 out)
- push.d.sp 0
- push.bd L5372 ; ___ai footwork (L5372)
+ pushFromFSp 0
+ pushFromPAi L5372 ; ___ai footwork (L5372)
  syscall 1, 9 ; trap_obj_act_push (2 in, 0 out)
- push.d.sp 0
- push.bd L5382 ; ___ai idle_fix (L5382)
+ pushFromFSp 0
+ pushFromPAi L5382 ; ___ai idle_fix (L5382)
  syscall 1, 9 ; trap_obj_act_push (2 in, 0 out)
- b L4799
+ jmp L4799
 L4679:
- push.d.sp 0
- jal 4, L97
- push.s 400
- sub.s 
- sltz.s 
- beqz L4717
- push.d.sp 0
- jal 4, L3661
- push.s 0.5
- sub.s 
- sltz.s 
- beqz L4709
- push.d.sp 0
- push.bd L5392 ; ___ai normal_jump_backward (L5392)
+ pushFromFSp 0
+ gosub 4, L97
+ pushImmf 400
+ subf 
+ infzf 
+ jz L4717
+ pushFromFSp 0
+ gosub 4, L3661
+ pushImmf 0.5
+ subf 
+ infzf 
+ jz L4709
+ pushFromFSp 0
+ pushFromPAi L5392 ; ___ai normal_jump_backward (L5392)
  syscall 1, 9 ; trap_obj_act_push (2 in, 0 out)
- b L4715
+ jmp L4715
 L4709:
- push.d.sp 0
- push.bd L5406 ; ___ai normal_jump_slant_far (L5406)
+ pushFromFSp 0
+ pushFromPAi L5406 ; ___ai normal_jump_slant_far (L5406)
  syscall 1, 9 ; trap_obj_act_push (2 in, 0 out)
 L4715:
- b L4799
+ jmp L4799
 L4717:
- push.s 1200
- push.d.sp 0
- jal 4, L97
- sub.s 
- sltz.s 
- beqz L4736
- push.d.sp 0
- push.bd L5428 ; ___ai normal_jump_forward (L5428)
+ pushImmf 1200
+ pushFromFSp 0
+ gosub 4, L97
+ subf 
+ infzf 
+ jz L4736
+ pushFromFSp 0
+ pushFromPAi L5428 ; ___ai normal_jump_forward (L5428)
  syscall 1, 9 ; trap_obj_act_push (2 in, 0 out)
- b L4799
+ jmp L4799
 L4736:
- push.d.sp 0
- jal 4, L3661
- pop.sp 4
- push.d.sp 4
- push.s 0.4
- sub.s 
- sltz.s 
- beqz L4759
- push.d.sp 0
- push.bd L5451 ; ___ai normal_jump_side (L5451)
+ pushFromFSp 0
+ gosub 4, L3661
+ popToSp 4
+ pushFromFSp 4
+ pushImmf 0.4
+ subf 
+ infzf 
+ jz L4759
+ pushFromFSp 0
+ pushFromPAi L5451 ; ___ai normal_jump_side (L5451)
  syscall 1, 9 ; trap_obj_act_push (2 in, 0 out)
- b L4799
+ jmp L4799
 L4759:
- push.d.sp 4
- push.s 0.8
- sub.s 
- sltz.s 
- beqz L4776
- push.d.sp 0
- push.bd L5466 ; ___ai normal_jump_slant_near (L5466)
+ pushFromFSp 4
+ pushImmf 0.8
+ subf 
+ infzf 
+ jz L4776
+ pushFromFSp 0
+ pushFromPAi L5466 ; ___ai normal_jump_slant_near (L5466)
  syscall 1, 9 ; trap_obj_act_push (2 in, 0 out)
- b L4799
+ jmp L4799
 L4776:
- push.d.sp 4
- push.s 0.95
- sub.s 
- sltz.s 
- beqz L4793
- push.d.sp 0
- push.bd L5392 ; ___ai normal_jump_backward (L5392)
+ pushFromFSp 4
+ pushImmf 0.95
+ subf 
+ infzf 
+ jz L4793
+ pushFromFSp 0
+ pushFromPAi L5392 ; ___ai normal_jump_backward (L5392)
  syscall 1, 9 ; trap_obj_act_push (2 in, 0 out)
- b L4799
+ jmp L4799
 L4793:
- push.d.sp 0
- push.bd L5428 ; ___ai normal_jump_forward (L5428)
+ pushFromFSp 0
+ pushFromPAi L5428 ; ___ai normal_jump_forward (L5428)
  syscall 1, 9 ; trap_obj_act_push (2 in, 0 out)
 L4799:
- b L4917
+ jmp L4917
 L4801:
- push 2
- push.d.sp.d 116
+ pushImm 2
+ pushFromFSpVal 116
  sub 
- seqz 
- beqz L4861
- push.s 1200
- push.d.sp 0
- jal 4, L97
- sub.s 
- sltz.s 
- beqz L4828
- push 3
- pop.sp.d 112
- b L4859
+ eqz 
+ jz L4861
+ pushImmf 1200
+ pushFromFSp 0
+ gosub 4, L97
+ subf 
+ infzf 
+ jz L4828
+ pushImm 3
+ popToSpVal 112
+ jmp L4859
 L4828:
- push.d.sp 0
- jal 4, L97
- push.s 600
- sub.s 
- sltz.s 
+ pushFromFSp 0
+ gosub 4, L97
+ pushImmf 600
+ subf 
+ infzf 
  dup 
- bnez L4843
- push.d.sp.d 120
- lor 
+ jnz L4843
+ pushFromFSpVal 120
+ neqzv 
 L4843:
- beqz L4853
- push.d.sp 0
- push.bd L5484 ; ___ai atk_soldier_gun (L5484)
+ jz L4853
+ pushFromFSp 0
+ pushFromPAi L5484 ; ___ai atk_soldier_gun (L5484)
  syscall 1, 9 ; trap_obj_act_push (2 in, 0 out)
- b L4859
+ jmp L4859
 L4853:
- push.d.sp 0
- push.bd L5497 ; ___ai atk_soldier_idle (L5497)
+ pushFromFSp 0
+ pushFromPAi L5497 ; ___ai atk_soldier_idle (L5497)
  syscall 1, 9 ; trap_obj_act_push (2 in, 0 out)
 L4859:
- b L4917
+ jmp L4917
 L4861:
- push.s 1200
- push.d.sp 0
- jal 4, L97
- sub.s 
- sltz.s 
- beqz L4892
- push.d.sp 0
- push.bd L5331 ; ___ai atk_soldier_box_end (L5331)
+ pushImmf 1200
+ pushFromFSp 0
+ gosub 4, L97
+ subf 
+ infzf 
+ jz L4892
+ pushFromFSp 0
+ pushFromPAi L5331 ; ___ai atk_soldier_box_end (L5331)
  syscall 1, 9 ; trap_obj_act_push (2 in, 0 out)
- push.d.sp 0
- push.bd L5300 ; ___ai move_forward (L5300)
+ pushFromFSp 0
+ pushFromPAi L5300 ; ___ai move_forward (L5300)
  syscall 1, 9 ; trap_obj_act_push (2 in, 0 out)
- push.d.sp 0
- push.bd L5307 ; ___ai atk_change_box (L5307)
+ pushFromFSp 0
+ pushFromPAi L5307 ; ___ai atk_change_box (L5307)
  syscall 1, 9 ; trap_obj_act_push (2 in, 0 out)
- b L4917
+ jmp L4917
 L4892:
- push.d.sp 0
- jal 4, L97
- push.s 600
- sub.s 
- sltz.s 
- beqz L4911
- push.d.sp 0
- push.bd L5514 ; ___ai atk_soldier_box_gun (L5514)
+ pushFromFSp 0
+ gosub 4, L97
+ pushImmf 600
+ subf 
+ infzf 
+ jz L4911
+ pushFromFSp 0
+ pushFromPAi L5514 ; ___ai atk_soldier_box_gun (L5514)
  syscall 1, 9 ; trap_obj_act_push (2 in, 0 out)
- b L4917
+ jmp L4917
 L4911:
- push.d.sp 0
- push.bd L5524 ; ___ai atk_soldier_box_idle (L5524)
+ pushFromFSp 0
+ pushFromPAi L5524 ; ___ai atk_soldier_box_idle (L5524)
  syscall 1, 9 ; trap_obj_act_push (2 in, 0 out)
 L4917:
  ret 
 L4918:
- pop.sp 0
- push.d.sp 0
- jal 4, L4936
- beqz L4935
- push.d.sp 0
- push.bd L5403 ; ___ai leave (L5403)
+ popToSp 0
+ pushFromFSp 0
+ gosub 4, L4936
+ jz L4935
+ pushFromFSp 0
+ pushFromPAi L5403 ; ___ai leave (L5403)
  syscall 1, 8 ; trap_obj_act_start (2 in, 0 out)
  halt 
- b L4935
+ jmp L4935
 L4935:
  ret 
 L4936:
- pop.sp 0
+ popToSp 0
  syscall 1, 206 ; trap_status_is_force_leave (0 in, 1 out)
- beqz L4951
- push 1
- pop.sp 8
- b L5006
+ jz L4951
+ pushImm 1
+ popToSp 8
+ jmp L5006
 L4949:
- b L4964
+ jmp L4964
 L4951:
  syscall 1, 171 ; trap_status_no_leave (0 in, 1 out)
- beqz L4964
- push 0
- pop.sp 8
- b L5006
+ jz L4964
+ pushImm 0
+ popToSp 8
+ jmp L5006
 L4962:
- b L4964
+ jmp L4964
 L4964:
- push 0
- pop.sp 8
- push.d.sp 0
- jal 8, L1815
- memcpy.sp 16, 16
- push.sp 16
- jal 12, L5009
- pop.sp 4
- push.d.sp 0
+ pushImm 0
+ popToSp 8
+ pushFromFSp 0
+ gosub 8, L1815
+ memcpyToSp 16, 16
+ pushFromPSp 16
+ gosub 12, L5009
+ popToSp 4
+ pushFromFSp 0
  syscall 1, 56 ; method_obj_is_culling (1 in, 1 out)
- beqz L4998
- push.d.sp 4
- push.d.sp.d 60
- sub.s 
- sgtz.s 
- pop.sp 8
- b L5006
+ jz L4998
+ pushFromFSp 4
+ pushFromFSpVal 60
+ subf 
+ supzf 
+ popToSp 8
+ jmp L5006
 L4998:
- push.d.sp 4
- push.d.sp.d 56
- sub.s 
- sgtz.s 
- pop.sp 8
+ pushFromFSp 4
+ pushFromFSpVal 56
+ subf 
+ supzf 
+ popToSp 8
 L5006:
- push.d.sp 8
+ pushFromFSp 8
  ret 
 L5009:
- pop.sp 4
- pop.sp 0
- push.d.sp 4
+ popToSp 4
+ popToSp 0
+ pushFromFSp 4
  syscall 1, 147 ; trap_obj_pos (1 in, 1 out)
- memcpy.sp 16, 16
- push.sp 16
- push.d.sp 0
+ memcpyToSp 16, 16
+ pushFromPSp 16
+ pushFromFSp 0
  syscall 1, 147 ; trap_obj_pos (1 in, 1 out)
- memcpy.sp 16, 32
- push.sp 32
+ memcpyToSp 16, 32
+ pushFromPSp 32
  syscall 0, 5 ; trap_vector_sub (2 in, 1 out)
- memcpy.sp 16, 48
- push.sp 48
+ memcpyToSp 16, 48
+ pushFromPSp 48
  syscall 0, 6 ; trap_vector_len (1 in, 1 out)
  ret 
-L5041: ;___label for action push.bd L5555 ; ___ai mode_revenge
- pop.sp 0
- push 0
- pop.sp.d 108
- push.d.sp 0
- jal 4, L4918
- push.d.sp 0
- push 1
- jal 4, L2491
- push 0
- push.d.sp.d 116
+L5041: ;___label for action pushFromPAi L5555 ; ___ai mode_revenge
+ popToSp 0
+ pushImm 0
+ popToSpVal 108
+ pushFromFSp 0
+ gosub 4, L4918
+ pushFromFSp 0
+ pushImm 1
+ gosub 4, L2491
+ pushImm 0
+ pushFromFSpVal 116
  sub 
- seqz 
- beqz L5076
- push.d.sp 0
- push.bd L5544 ; ___ai atk_pumpkin (L5544)
+ eqz 
+ jz L5076
+ pushFromFSp 0
+ pushFromPAi L5544 ; ___ai atk_pumpkin (L5544)
  syscall 1, 8 ; trap_obj_act_start (2 in, 0 out)
- b L5076
+ jmp L5076
 L5076:
  ret 
-L5077: ;___label for action push.bd L5602 ; ___ai revenge
- pop.sp 0
+L5077: ;___label for action pushFromPAi L5602 ; ___ai revenge
+ popToSp 0
  ret 
 L5080:
- pop.sp 4
- pop.sp 0
- push.d.sp 0
- push 36
+ popToSp 4
+ popToSp 0
+ pushFromFSp 0
+ pushImm 36
  add 
- push.d.sp 4
+ pushFromFSp 4
  memcpy 0
  ret 
 L5094:
- pop.sp 4
- pop.sp 0
- push.d.sp 4
+ popToSp 4
+ popToSp 0
+ pushFromFSp 4
  dup 
- push 5
+ pushImm 5
  sub 
- beqz L5109
- b L5131
+ jz L5109
+ jmp L5131
 L5109:
- push.d.sp 0
- push 56
+ pushFromFSp 0
+ pushImm 56
  add 
- push.s 2500
+ pushImmf 2500
  memcpy 0
- push.d.sp 0
- push 60
+ pushFromFSp 0
+ pushImm 60
  add 
- push.s 1800
+ pushImmf 1800
  memcpy 0
- b L5213
+ jmp L5213
 L5131:
  dup 
- push 6
+ pushImm 6
  sub 
- beqz L5140
- b L5162
+ jz L5140
+ jmp L5162
 L5140:
- push.d.sp 0
- push 56
+ pushFromFSp 0
+ pushImm 56
  add 
- push.s 2500
+ pushImmf 2500
  memcpy 0
- push.d.sp 0
- push 60
+ pushFromFSp 0
+ pushImm 60
  add 
- push.s 1200
+ pushImmf 1200
  memcpy 0
- b L5213
+ jmp L5213
 L5162:
  syscall 1, 23 ; trap_area_world (0 in, 1 out)
- push 10
+ pushImm 10
  sub 
- seqz 
- beqz L5193
- push.d.sp 0
- push 56
+ eqz 
+ jz L5193
+ pushFromFSp 0
+ pushImm 56
  add 
- push.s 2500
+ pushImmf 2500
  memcpy 0
- push.d.sp 0
- push 60
+ pushFromFSp 0
+ pushImm 60
  add 
- push.s 1200
+ pushImmf 1200
  memcpy 0
- b L5213
+ jmp L5213
 L5193:
- push.d.sp 0
- push 56
+ pushFromFSp 0
+ pushImm 56
  add 
- push.s 2000
+ pushImmf 2000
  memcpy 0
- push.d.sp 0
- push 60
+ pushFromFSp 0
+ pushImm 60
  add 
- push.s 1200
+ pushImmf 1200
  memcpy 0
 L5213:
  drop 
  ret 
 L5215:
- pop.sp 4
- pop.sp 8
- pop.sp 0
- push.d.sp 0
- push 48
+ popToSp 4
+ popToSp 8
+ popToSp 0
+ pushFromFSp 0
+ pushImm 48
  add 
- push.d.sp 8
+ pushFromFSp 8
  memcpy 0
- push.d.sp 0
- push 52
+ pushFromFSp 0
+ pushImm 52
  add 
- push.d.sp 4
+ pushFromFSp 4
  memcpy 0
  ret 
 L5240:
- pop.sp 0
- push.d.sp 0
- push 15
+ popToSp 0
+ pushFromFSp 0
+ pushImm 15
  syscall 1, 53 ; method_obj_disable_collision (2 in, 0 out)
- push.d.sp 0
- push 16
+ pushFromFSp 0
+ pushImm 16
  syscall 1, 53 ; method_obj_disable_collision (2 in, 0 out)
- push.d.sp 0
- push 19
+ pushFromFSp 0
+ pushImm 19
  syscall 1, 53 ; method_obj_disable_collision (2 in, 0 out)
- push.d.sp 0
- push 17
+ pushFromFSp 0
+ pushImm 17
  syscall 1, 53 ; method_obj_disable_collision (2 in, 0 out)
- push.d.sp 0
- push 18
+ pushFromFSp 0
+ pushImm 18
  syscall 1, 53 ; method_obj_disable_collision (2 in, 0 out)
  ret 
 D5278:
