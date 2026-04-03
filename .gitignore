@@ -58,3 +58,7 @@ kh2fmbr/build
 
 PyPI-Recovery-Codes-roromaniac.txt
 .pypirc
+
+# python environment 
+.vscode
+khbr_env/
