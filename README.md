@@ -1,6 +1,6 @@
-To install
-
+```bash
 pip install kh2fmbr
+```
 
 Setup an environment variable called "USE_KH2_GITPATH" which points to one level above your extracted KH2 directory (which should be called KH2)
 
