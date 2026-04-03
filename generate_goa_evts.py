@@ -1,7 +1,7 @@
 # Some annoying permission issues preventing this from working
 import os, shutil
 
-outdir = os.path.join(os.path.dirname(__file__), "khbr", "KH2", "data", "goa", "ard")
+outdir = os.path.join(os.path.dirname(__file__), "kh2fmbr", "KH2", "data", "goa", "ard")
 if os.path.exists(outdir):
     shutil.rmtree(outdir)
 os.makedirs(outdir)

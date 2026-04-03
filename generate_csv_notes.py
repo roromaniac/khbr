@@ -1,4 +1,4 @@
-from khbr.randomizer import KingdomHearts2
+from kh2fmbr.randomizer import KingdomHearts2
 import random, os, json, time
 
 # These bosses I'm not planning on ever randomizing, so can exclude them

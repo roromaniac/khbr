@@ -1,6 +1,6 @@
 To install
 
-pip install khbr
+pip install kh2fmbr
 
 Setup an environment variable called "USE_KH2_GITPATH" which points to one level above your extracted KH2 directory (which should be called KH2)
 
@@ -29,5 +29,5 @@ to test
 * cd dist
 * pip uninstall khbr
 * pip install <>
-* cd ~/.local/lib/python3.8/site-packages/khbr/
+* cd ~/.local/lib/python3.8/site-packages/kh2fmbr/
 * python integration_tests.py

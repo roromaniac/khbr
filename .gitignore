@@ -26,7 +26,7 @@ yarn-debug.log*
 yarn-error.log*
 *.pyc
 
-khbr/randomizations/*
+kh2fmbr/randomizations/*
 
 tests_debug.py
 *.zip
@@ -36,7 +36,7 @@ tests_debug.py
 __pycache__
 
 dist
-khbr.egg-info
+kh2fmbr.egg-info
 devmod
 extracted_data
 
@@ -54,4 +54,7 @@ custom.stuff
 override_locations.yaml
 override_enemies.yaml
 
-khbr/build
+kh2fmbr/build
+
+PyPI-Recovery-Codes-roromaniac.txt
+.pypirc

@@ -1,4 +1,4 @@
-from khbr.randomizer import KingdomHearts2
+from kh2fmbr.randomizer import KingdomHearts2
 import random, os, json, time
 
 kh2 = KingdomHearts2()
@@ -13,7 +13,7 @@ SOLUTIONSWANTED = 10
 # A few bosses can be found in multiple spawnpoints, ignore the ones that don't matter
 # to make a list of bosses with 1 spawnpoint each
 
-outdir = os.path.join("khbr", "randomizations")
+outdir = os.path.join("kh2fmbr", "randomizations")
 # Two option
 for options in [{"name": "limited", "size": MAXCACHESIZE}, {"name": "unlimited", "size": UNLIMITEDSIZE},
             {"name": "limited-stable", "size": MAXCACHESIZE, "stableonly": True}, 

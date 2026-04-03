@@ -1,21 +1,21 @@
-import khbr
+import kh2fmbr
 from setuptools import setup, find_packages
 
 with open('README.md') as f:
     long_description = f.read()
 
 setup(
-	name = 'khbr',
+	name = 'kh2fmbr',
 	packages = find_packages(),
 	include_package_data=True,
-	version = '4.1.2',
+	version = '0.0.1',
 	long_description = long_description,
 	long_description_content_type='text/markdown',
 	license = 'MIT',
-	author = 'Thundrio',
-	author_email= 'thundrio@yahoo.com',
-	maintainer_email = 'thundrio@yahoo.com',
-	url = 'https://github.com/thundrio-kh/khbr',
+	author = 'roromaniac',
+	author_email= 'rando4ukraine@gmail.com',
+	maintainer_email = 'rando4ukraine@gmail.com',
+	url = 'https://github.com/roromaniac/khbr',
 	classifiers = [
 		"Intended Audience :: Developers",
 		"Operating System :: OS Independent",

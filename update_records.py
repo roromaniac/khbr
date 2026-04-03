@@ -1,4 +1,4 @@
-from khbr.randomizer import KingdomHearts2
+from kh2fmbr.randomizer import KingdomHearts2
 import random
 import json, os
 random.seed(5)
@@ -15,12 +15,12 @@ print("making records")
 starttime = time.time()
 full_records = kh2.enemy_manager.create_enemy_records(moose=False)
 name = "full_enemy_records.json"
-json.dump(full_records, open(os.path.join("khbr", "KH2", "data", name), "w"), indent=4)
+json.dump(full_records, open(os.path.join("kh2fmbr", "KH2", "data", name), "w"), indent=4)
 print("making MOOSE records")
 full_records = kh2.enemy_manager.create_enemy_records(moose=True)
 
 name = "full_enemy_records_moose.json"
-json.dump(full_records, open(os.path.join("khbr", "KH2", "data", name), "w"), indent=4)
+json.dump(full_records, open(os.path.join("kh2fmbr", "KH2", "data", name), "w"), indent=4)
 print(f"Took {time.time()-starttime}s")
 
 

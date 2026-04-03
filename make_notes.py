@@ -1,4 +1,4 @@
-from khbr.randomizer import KingdomHearts2
+from kh2fmbr.randomizer import KingdomHearts2
 import random, os, json, time, string
 
 
